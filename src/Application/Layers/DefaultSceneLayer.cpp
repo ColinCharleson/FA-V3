@@ -48,12 +48,7 @@
 #include "Gameplay/Components/MaterialSwapBehaviour.h"
 #include "Gameplay/Components/TriggerVolumeEnterBehaviour.h"
 #include "Gameplay/Components/SimpleCameraControl.h"
-#include "Gameplay/Components/IComponent.h"
-#include "Gameplay/Components/Camera.h"
-#include "Gameplay/Components/RotatingBehaviour.h"
-#include "Gameplay/Components/JumpBehaviour.h"
-#include "Gameplay/Components/RenderComponent.h"
-#include "Gameplay/Components/MaterialSwapBehaviour.h"
+//Custom Components
 #include <Gameplay\Components\ItemKeyBehaviour.h>
 #include <Gameplay\Components\ItemBandageBehaviour.h>
 #include <Gameplay\Components\ItemAmmoBehaviour.h>
@@ -75,6 +70,10 @@
 #include "Gameplay/Components/EnemyAiSpider.h"
 #include "Gameplay/Components/EnemyAiGolem.h"
 #include <Gameplay\Components\MorphMeshRenderer.h>
+#include "Gameplay/Physics/EnemyPath.h"
+#include "Gameplay/Physics/EnemyPathCatMull.h"
+#include "Gameplay/Physics/EnemyPathBezeir.h"
+
 // Physics
 #include "Gameplay/Physics/RigidBody.h"
 #include "Gameplay/Physics/Colliders/BoxCollider.h"
@@ -84,9 +83,6 @@
 #include "Gameplay/Physics/Colliders/CylinderCollider.h"
 #include "Gameplay/Physics/TriggerVolume.h"
 #include "Graphics/DebugDraw.h"
-#include "Gameplay/Physics/EnemyPath.h"
-#include "Gameplay/Physics/EnemyPathCatMull.h"
-#include "Gameplay/Physics/EnemyPathBezeir.h"
 
 // GUI
 #include "Gameplay/Components/GUI/RectTransform.h"
@@ -109,17 +105,19 @@ DefaultSceneLayer::DefaultSceneLayer() :
 	Overrides = AppLayerFunctions::OnAppLoad;
 }
 
+DefaultSceneLayer::~DefaultSceneLayer() = default;
+
 float boltX, boltY, boltZ;
 bool arrowOut = false;
 bool canShoot = true;
 bool hasKey = false, slimeSlow = false;
 int ammoCount = 5, playerHealth = 3, bandageCount = 0;
 
+
+
 int roomType, progressScore;
 glm::quat currentRot;
 glm::vec3 forward;
-
-DefaultSceneLayer::~DefaultSceneLayer() = default;
 
 void DefaultSceneLayer::OnAppLoad(const nlohmann::json& config) {
 	_CreateScene();
@@ -183,6 +181,9 @@ void DefaultSceneLayer::_CreateScene()
 		Texture2D::Sptr    boxSpec      = ResourceManager::CreateAsset<Texture2D>("textures/box-specular.png");
 		Texture2D::Sptr    monkeyTex    = ResourceManager::CreateAsset<Texture2D>("textures/monkey-uvMap.png");
 		Texture2D::Sptr    leafTex      = ResourceManager::CreateAsset<Texture2D>("textures/leaves.png");
+		leafTex->SetMinFilter(MinFilter::Nearest);
+		leafTex->SetMagFilter(MagFilter::Nearest);
+
 		// Load in some textures
 		MeshResource::Sptr spiderMesh = ResourceManager::CreateAsset<MeshResource>("SpiderMesh.obj");
 		MeshResource::Sptr chestMesh = ResourceManager::CreateAsset<MeshResource>("Chest.obj"); //1
@@ -247,9 +248,6 @@ void DefaultSceneLayer::_CreateScene()
 		Texture2D::Sptr    winPNG = ResourceManager::CreateAsset<Texture2D>("textures/UIWin2.png");
 		Texture2D::Sptr    Crosshair = ResourceManager::CreateAsset<Texture2D>("textures/CH.png");
 		Texture2D::Sptr    Bandage = ResourceManager::CreateAsset<Texture2D>("textures/Bandaid.png");
-		leafTex->SetMinFilter(MinFilter::Nearest);
-		leafTex->SetMagFilter(MagFilter::Nearest);
-
 		// Load some images for drag n' drop
 		ResourceManager::CreateAsset<Texture2D>("textures/flashlight.png");
 		ResourceManager::CreateAsset<Texture2D>("textures/flashlight-2.png");
@@ -307,207 +305,238 @@ void DefaultSceneLayer::_CreateScene()
 		// Configure the color correction LUT
 		scene->SetColorLUT(lut);
 
-		// Create our materials
-		// This will be our box material, with no environment reflections
-
-		Material::Sptr chainMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
+		// Our toon shader material
+		Material::Sptr toonMaterial = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			chainMaterial->Name = "chain1";
-			chainMaterial->Set("u_Material.Diffuse", ChainTexture);
-			chainMaterial->Set("u_Material.Shininess", 0.1f);
-
+			toonMaterial->Name = "Golem "; 
+			toonMaterial->Set("u_Material.AlbedoMap", golemTexture);
+			toonMaterial->Set("u_Material.NormalMap", normalMapDefault);
+			toonMaterial->Set("s_ToonTerm", toonLut);
+			toonMaterial->Set("u_Material.Shininess", 0.1f); 
+			toonMaterial->Set("u_Material.Steps", 8);
 		}
 
-		Material::Sptr chain2Material = ResourceManager::CreateAsset<Material>();
+		Material::Sptr chainMaterial = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			chainMaterial->Name = "chain2";
-			chainMaterial->Set("u_Material.Diffuse", Chain2Texture);
+			chainMaterial->Name = "Chain 1 ";
+			chainMaterial->Set("u_Material.AlbedoMap", ChainTexture);
+			chainMaterial->Set("u_Material.NormalMap", normalMapDefault);
+			chainMaterial->Set("s_ToonTerm", toonLut);
 			chainMaterial->Set("u_Material.Shininess", 0.1f);
+			chainMaterial->Set("u_Material.Steps", 8);
+		}
 
+		Material::Sptr chain2Material = ResourceManager::CreateAsset<Material>(celShader);
+		{
+			chain2Material->Name = "Chain 2";
+			chain2Material->Set("u_Material.AlbedoMap", Chain2Texture);
+			chain2Material->Set("u_Material.NormalMap", normalMapDefault);
+			chain2Material->Set("s_ToonTerm", toonLut);
+			chain2Material->Set("u_Material.Shininess", 0.1f);
+			chain2Material->Set("u_Material.Steps", 8);
 		}
 
 
-		Material::Sptr bonesMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
+		Material::Sptr bonesMaterial = ResourceManager::CreateAsset<Material>(celShader);
 		{
 			bonesMaterial->Name = "Bones";
-			bonesMaterial->Set("u_Material.Diffuse", BonesTexture);
+			bonesMaterial->Set("u_Material.AlbedoMap", BonesTexture);
+			bonesMaterial->Set("u_Material.NormalMap", normalMapDefault);
+			bonesMaterial->Set("s_ToonTerm", toonLut);
 			bonesMaterial->Set("u_Material.Shininess", 0.1f);
-
+			bonesMaterial->Set("u_Material.Steps", 8);
 		}
 
 
-		Material::Sptr jailbarMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
+		Material::Sptr jailbarMaterial = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			jailbarMaterial->Name = "JailBar";
-			jailbarMaterial->Set("u_Material.Diffuse", JailBarTexture);
+			jailbarMaterial->Name = "jail";
+			jailbarMaterial->Set("u_Material.AlbedoMap", JailBarTexture);
+			jailbarMaterial->Set("u_Material.NormalMap", normalMapDefault);
+			jailbarMaterial->Set("s_ToonTerm", toonLut);
 			jailbarMaterial->Set("u_Material.Shininess", 0.1f);
-
+			jailbarMaterial->Set("u_Material.Steps", 8);
 		}
 
-		Material::Sptr spikeMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
+		Material::Sptr spikeMaterial = ResourceManager::CreateAsset<Material>(celShader);
 		{
 			spikeMaterial->Name = "Spikes";
-			spikeMaterial->Set("u_Material.Diffuse", spikeTexture);
+			spikeMaterial->Set("u_Material.AlbedoMap", spikeTexture);
+			spikeMaterial->Set("u_Material.NormalMap", normalMapDefault);
+			spikeMaterial->Set("s_ToonTerm", toonLut);
 			spikeMaterial->Set("u_Material.Shininess", 0.1f);
-
+			spikeMaterial->Set("u_Material.Steps", 8);
 		}
 
 
-		Material::Sptr barrelMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
+		Material::Sptr barrelMaterial = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			barrelMaterial->Name = "Barrel";
-			barrelMaterial->Set("u_Material.Diffuse", BarrelTexture);
-
+			barrelMaterial->Name = "barrel";
+			barrelMaterial->Set("u_Material.AlbedoMap", BarrelTexture);
+			barrelMaterial->Set("u_Material.NormalMap", normalMapDefault);
+			barrelMaterial->Set("s_ToonTerm", toonLut);
+			barrelMaterial->Set("u_Material.Shininess", 0.1f);
+			barrelMaterial->Set("u_Material.Steps", 8);
 		}
 
-		Material::Sptr slimeMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
+		Material::Sptr slimeMaterial = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			slimeMaterial->Name = "Barrel";
-			slimeMaterial->Set("u_Material.Diffuse", slimeTexture);
+			slimeMaterial->Name = "slime";
+			slimeMaterial->Set("u_Material.AlbedoMap", slimeTexture);
+			slimeMaterial->Set("u_Material.NormalMap", normalMapDefault);
+			slimeMaterial->Set("s_ToonTerm", toonLut);
 			slimeMaterial->Set("u_Material.Shininess", 0.1f);
-
+			slimeMaterial->Set("u_Material.Steps", 8);
 		}
 
-		Material::Sptr roofMat = ResourceManager::CreateAsset<Material>(displacementShader);
+		Material::Sptr roofMat = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			Texture2D::Sptr displacementMap = ResourceManager::CreateAsset<Texture2D>("textures/Ceiling1/plane_DefaultMaterial_Height.png");
-			Texture2D::Sptr normalMap = ResourceManager::CreateAsset<Texture2D>("textures/Ceiling1/plane_DefaultMaterial_Normal.png");
 			Texture2D::Sptr diffuseMap = ResourceManager::CreateAsset<Texture2D>("textures/Ceiling1/plane_DefaultMaterial_BaseColor.png");
 
-			roofMat->Name = "Displacement Map";
-			roofMat->Set("u_Material.Diffuse", diffuseMap);
-			roofMat->Set("s_Heightmap", displacementMap);
-			roofMat->Set("s_NormalMap", normalMap);
-			roofMat->Set("u_Scale", 0.0f);
+			roofMat->Name = "roof";
+			roofMat->Set("u_Material.AlbedoMap", diffuseMap);
+			roofMat->Set("u_Material.NormalMap", normalMapDefault);
+			roofMat->Set("s_ToonTerm", toonLut);
+			roofMat->Set("u_Material.Shininess", 0.1f);
+			roofMat->Set("u_Material.Steps", 8);
 		}
-		Material::Sptr wallMaterialVarOne = ResourceManager::CreateAsset<Material>(displacementShader);
+		Material::Sptr wallMaterialVarOne = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			Texture2D::Sptr displacementMap = ResourceManager::CreateAsset<Texture2D>("textures/Wall1/wall_Wall_Material_Height.1001.png");
-			Texture2D::Sptr normalMap = ResourceManager::CreateAsset<Texture2D>("textures/Wall1/wall_Wall_Material_Normal.1001.png");
 			Texture2D::Sptr diffuseMap = ResourceManager::CreateAsset<Texture2D>("textures/Wall1/wall_Wall_Material_BaseColor.1001.png");
 
-			wallMaterialVarOne->Name = "Displacement Map";
-			wallMaterialVarOne->Set("u_Material.Diffuse", diffuseMap);
-			wallMaterialVarOne->Set("s_Heightmap", displacementMap);
-			wallMaterialVarOne->Set("s_NormalMap", normalMap);
-			wallMaterialVarOne->Set("u_Scale", 0.0f);
+			wallMaterialVarOne->Name = "wall1";
+			wallMaterialVarOne->Set("u_Material.AlbedoMap", diffuseMap);
+			wallMaterialVarOne->Set("u_Material.NormalMap", normalMapDefault);
+			wallMaterialVarOne->Set("s_ToonTerm", toonLut);
+			wallMaterialVarOne->Set("u_Material.Shininess", 0.1f);
+			wallMaterialVarOne->Set("u_Material.Steps", 8);
 		}
-		Material::Sptr wallMaterialVarTwo = ResourceManager::CreateAsset<Material>(displacementShader);
+		Material::Sptr wallMaterialVarTwo = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			Texture2D::Sptr displacementMap = ResourceManager::CreateAsset<Texture2D>("textures/Wall2/wall_Wall_Material_Height.1001.png");
-			Texture2D::Sptr normalMap = ResourceManager::CreateAsset<Texture2D>("textures/Wall2/wall_Wall_Material_Normal.1001.png");
 			Texture2D::Sptr diffuseMap = ResourceManager::CreateAsset<Texture2D>("textures/Wall2/wall_Wall_Material_BaseColor.1001.png");
 
-			wallMaterialVarTwo->Name = "Displacement Map";
-			wallMaterialVarTwo->Set("u_Material.Diffuse", diffuseMap);
-			wallMaterialVarTwo->Set("s_Heightmap", displacementMap);
-			wallMaterialVarTwo->Set("s_NormalMap", normalMap);
-			wallMaterialVarTwo->Set("u_Scale", 0.0f);
+			wallMaterialVarTwo->Name = "wall2";
+			wallMaterialVarTwo->Set("u_Material.AlbedoMap", diffuseMap);
+			wallMaterialVarTwo->Set("u_Material.NormalMap", normalMapDefault);
+			wallMaterialVarTwo->Set("s_ToonTerm", toonLut);
+			wallMaterialVarTwo->Set("u_Material.Shininess", 0.1f);
+			wallMaterialVarTwo->Set("u_Material.Steps", 8);
 		}
-		Material::Sptr wallMaterialVarThree = ResourceManager::CreateAsset<Material>(displacementShader);
+		Material::Sptr wallMaterialVarThree = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			Texture2D::Sptr displacementMap = ResourceManager::CreateAsset<Texture2D>("textures/Wall3/wall_Wall_Material_Height.1001.png");
-			Texture2D::Sptr normalMap = ResourceManager::CreateAsset<Texture2D>("textures/Wall3/wall_Wall_Material_Normal.1001.png");
 			Texture2D::Sptr diffuseMap = ResourceManager::CreateAsset<Texture2D>("textures/Wall3/wall_Wall_Material_BaseColor.1001.png");
 
-			wallMaterialVarThree->Name = "Displacement Map";
-			wallMaterialVarThree->Set("u_Material.Diffuse", diffuseMap);
-			wallMaterialVarThree->Set("s_Heightmap", displacementMap);
-			wallMaterialVarThree->Set("s_NormalMap", normalMap);
-			wallMaterialVarThree->Set("u_Scale", 0.0f);
+			wallMaterialVarThree->Name = "wall3";
+			wallMaterialVarThree->Set("u_Material.AlbedoMap", diffuseMap);
+			wallMaterialVarThree->Set("u_Material.NormalMap", normalMapDefault);
+			wallMaterialVarThree->Set("s_ToonTerm", toonLut);
+			wallMaterialVarThree->Set("u_Material.Shininess", 0.1f);
+			wallMaterialVarThree->Set("u_Material.Steps", 8);
 		}
-		Material::Sptr wallMaterialVarFour = ResourceManager::CreateAsset<Material>(displacementShader);
+		Material::Sptr wallMaterialVarFour = ResourceManager::CreateAsset<Material>(celShader);
 		{
 			Texture2D::Sptr displacementMap = ResourceManager::CreateAsset<Texture2D>("textures/Wall4/wall_Wall_Material_Height.1001.png");
 			Texture2D::Sptr normalMap = ResourceManager::CreateAsset<Texture2D>("textures/Wall4/wall_Wall_Material_Normal.1001.png");
 			Texture2D::Sptr diffuseMap = ResourceManager::CreateAsset<Texture2D>("textures/Wall4/wall_Wall_Material_BaseColor.1001.png");
 
-			wallMaterialVarFour->Name = "Displacement Map";
-			wallMaterialVarFour->Set("u_Material.Diffuse", diffuseMap);
-			wallMaterialVarFour->Set("s_Heightmap", displacementMap);
-			wallMaterialVarFour->Set("s_NormalMap", normalMap);
-			wallMaterialVarFour->Set("u_Scale", 0.0f);
+			wallMaterialVarFour->Name = "wall 4";
+			wallMaterialVarFour->Set("u_Material.AlbedoMap", diffuseMap);
+			wallMaterialVarFour->Set("u_Material.NormalMap", normalMapDefault);
+			wallMaterialVarFour->Set("s_ToonTerm", toonLut);
+			wallMaterialVarFour->Set("u_Material.Shininess", 0.1f);
+			wallMaterialVarFour->Set("u_Material.Steps", 8);
 		}
-		Material::Sptr wallMaterialVarFive = ResourceManager::CreateAsset<Material>(displacementShader);
+		Material::Sptr wallMaterialVarFive = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			Texture2D::Sptr displacementMap = ResourceManager::CreateAsset<Texture2D>("textures/Wall5/wall_Wall_Material_Height.1001.png");
-			Texture2D::Sptr normalMap = ResourceManager::CreateAsset<Texture2D>("textures/Wall5/wall_Wall_Material_Normal.1001.png");
 			Texture2D::Sptr diffuseMap = ResourceManager::CreateAsset<Texture2D>("textures/Wall5/wall_Wall_Material_BaseColor.1001.png");
 
-			wallMaterialVarFive->Name = "Displacement Map";
-			wallMaterialVarFive->Set("u_Material.Diffuse", diffuseMap);
-			wallMaterialVarFive->Set("s_Heightmap", displacementMap);
-			wallMaterialVarFive->Set("s_NormalMap", normalMap);
-			wallMaterialVarFive->Set("u_Scale", 0.0f);
+			wallMaterialVarFive->Name = "wall 5";
+			wallMaterialVarFive->Set("u_Material.AlbedoMap", diffuseMap);
+			wallMaterialVarFive->Set("u_Material.NormalMap", normalMapDefault);
+			wallMaterialVarFive->Set("s_ToonTerm", toonLut);
+			wallMaterialVarFive->Set("u_Material.Shininess", 0.1f);
+			wallMaterialVarFive->Set("u_Material.Steps", 8);
 		}
-		Material::Sptr wallMaterialVarSix = ResourceManager::CreateAsset<Material>(displacementShader);
+		Material::Sptr wallMaterialVarSix = ResourceManager::CreateAsset<Material>(celShader);
 		{
 			Texture2D::Sptr displacementMap = ResourceManager::CreateAsset<Texture2D>("textures/Wall6/wall_Wall_Material_Height.1001.png");
 			Texture2D::Sptr normalMap = ResourceManager::CreateAsset<Texture2D>("textures/Wall6/wall_Wall_Material_Normal.1001.png");
 			Texture2D::Sptr diffuseMap = ResourceManager::CreateAsset<Texture2D>("textures/Wall6/wall_Wall_Material_BaseColor.1001.png");
 
-			wallMaterialVarSix->Name = "Displacement Map";
-			wallMaterialVarSix->Set("u_Material.Diffuse", diffuseMap);
-			wallMaterialVarSix->Set("s_Heightmap", displacementMap);
-			wallMaterialVarSix->Set("s_NormalMap", normalMap);
-			wallMaterialVarSix->Set("u_Scale", 0.0f);
+			wallMaterialVarSix->Name = "pillart 6";
+			wallMaterialVarSix->Set("u_Material.AlbedoMap", diffuseMap);
+			wallMaterialVarSix->Set("u_Material.NormalMap", normalMapDefault);
+			wallMaterialVarSix->Set("s_ToonTerm", toonLut);
+			wallMaterialVarSix->Set("u_Material.Shininess", 0.1f);
+			wallMaterialVarSix->Set("u_Material.Steps", 8);
 		}
 
-		Material::Sptr pillarMaterialVarOne = ResourceManager::CreateAsset<Material>(displacementShader);
+		Material::Sptr pillarMaterialVarOne = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			Texture2D::Sptr displacementMap = ResourceManager::CreateAsset<Texture2D>("textures/Pillar1/PillarNEW_PillarMat1_Height.1001.png");
-			Texture2D::Sptr normalMap = ResourceManager::CreateAsset<Texture2D>("textures/Pillar1/PillarNEW_PillarMat1_Normal.1001.png");
 			Texture2D::Sptr diffuseMap = ResourceManager::CreateAsset<Texture2D>("textures/Pillar1/PillarNEW_PillarMat1_BaseColor.1001.png");
 
-			pillarMaterialVarOne->Name = "Displacement Map";
-			pillarMaterialVarOne->Set("u_Material.Diffuse", diffuseMap);
-			pillarMaterialVarOne->Set("s_Heightmap", displacementMap);
-			pillarMaterialVarOne->Set("s_NormalMap", normalMap);
-			pillarMaterialVarOne->Set("u_Scale", 0.0f);
+			pillarMaterialVarOne->Name = "pillart 1 ";
+			pillarMaterialVarOne->Set("u_Material.AlbedoMap", diffuseMap);
+			pillarMaterialVarOne->Set("u_Material.NormalMap", normalMapDefault);
+			pillarMaterialVarOne->Set("s_ToonTerm", toonLut);
+			pillarMaterialVarOne->Set("u_Material.Shininess", 0.1f);
+			pillarMaterialVarOne->Set("u_Material.Steps", 8);
 		}
 
 
-		Material::Sptr torchMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
+		Material::Sptr torchMaterial = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			torchMaterial->Name = "Torch";
-			torchMaterial->Set("u_Material.Diffuse", torchTexture);
+			torchMaterial->Name = "pillart 1 ";
+			torchMaterial->Set("u_Material.AlbedoMap", torchTexture);
+			torchMaterial->Set("u_Material.NormalMap", normalMapDefault);
+			torchMaterial->Set("s_ToonTerm", toonLut);
 			torchMaterial->Set("u_Material.Shininess", 0.1f);
-
+			torchMaterial->Set("u_Material.Steps", 8);
 		}
 
-		Material::Sptr chestMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
+		Material::Sptr chestMaterial = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			chestMaterial->Name = "Chest";
-			chestMaterial->Set("u_Material.Diffuse", chestTexture);
+			chestMaterial->Name = "chest ";
+			chestMaterial->Set("u_Material.AlbedoMap", chestTexture);
+			chestMaterial->Set("u_Material.NormalMap", normalMapDefault);
+			chestMaterial->Set("s_ToonTerm", toonLut);
 			chestMaterial->Set("u_Material.Shininess", 0.1f);
-
+			chestMaterial->Set("u_Material.Steps", 8);
 		}
 
-		Material::Sptr doorMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
+		Material::Sptr doorMaterial = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			doorMaterial->Name = "Door";
-			doorMaterial->Set("u_Material.Diffuse", doorTexture);
+			doorMaterial->Name = "door";
+			doorMaterial->Set("u_Material.AlbedoMap", doorTexture);
+			doorMaterial->Set("u_Material.NormalMap", normalMapDefault);
+			doorMaterial->Set("s_ToonTerm", toonLut);
 			doorMaterial->Set("u_Material.Shininess", 0.1f);
-
+			doorMaterial->Set("u_Material.Steps", 8);
 		}
 
-		Material::Sptr spiderMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
+		Material::Sptr spiderMaterial = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			spiderMaterial->Name = "Spider";
+			spiderMaterial->Name = "Golem";
 			spiderMaterial->Set("u_Material.Diffuse", spiderTexture);
 			spiderMaterial->Set("u_Material.Shininess", 0.1f);
 
+			spiderMaterial->Set("s_ToonTerm", toonLut);
+			spiderMaterial->Set("u_Material.Shininess", 0.1f);
+			spiderMaterial->Set("u_Material.Steps", 8);
 		}
 
-		Material::Sptr bossMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
+		Material::Sptr bossMaterial = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			bossMaterial->Name = "Boss";
+			bossMaterial->Name = "boss";
 			bossMaterial->Set("u_Material.Diffuse", bossTexture);
 			bossMaterial->Set("u_Material.Shininess", 0.1f);
 
+			bossMaterial->Set("s_ToonTerm", toonLut);
+			bossMaterial->Set("u_Material.Shininess", 0.1f);
+			bossMaterial->Set("u_Material.Steps", 8);
 		}
 
-		Material::Sptr golemMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
+		Material::Sptr golemMaterial = ResourceManager::CreateAsset<Material>(celShader);
 		{
 			golemMaterial->Name = "Golem";
 			golemMaterial->Set("u_Material.Diffuse", golemTexture);
@@ -518,173 +547,85 @@ void DefaultSceneLayer::_CreateScene()
 			golemMaterial->Set("u_Material.Steps", 8);
 		}
 
-		Material::Sptr arrowMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
+		Material::Sptr arrowMaterial = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			arrowMaterial->Name = "Arrow";
-			arrowMaterial->Set("u_Material.Diffuse", arrowTexture);
-
+			arrowMaterial->Name = "arrow ";
+			arrowMaterial->Set("u_Material.AlbedoMap", arrowTexture);
+			arrowMaterial->Set("u_Material.NormalMap", normalMapDefault);
+			arrowMaterial->Set("s_ToonTerm", toonLut);
+			arrowMaterial->Set("u_Material.Shininess", 0.1f);
+			arrowMaterial->Set("u_Material.Steps", 8);
 		}
 
-		Material::Sptr keyMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
+		Material::Sptr keyMaterial = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			keyMaterial->Name = "Key";
-			keyMaterial->Set("u_Material.Diffuse", keyTexture);
+			keyMaterial->Name = "key";
+			keyMaterial->Set("u_Material.AlbedoMap", keyTexture);
+			keyMaterial->Set("u_Material.NormalMap", normalMapDefault);
+			keyMaterial->Set("s_ToonTerm", toonLut);
 			keyMaterial->Set("u_Material.Shininess", 0.1f);
-
+			keyMaterial->Set("u_Material.Steps", 8);
 		}
 
-		Material::Sptr bandageMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
+		Material::Sptr bandageMaterial = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			bandageMaterial->Name = "Bandage";
-			bandageMaterial->Set("u_Material.Diffuse", bandageTexture);
+			bandageMaterial->Name = "bandage";
+			bandageMaterial->Set("u_Material.AlbedoMap", bandageTexture);
+			bandageMaterial->Set("u_Material.NormalMap", normalMapDefault);
+			bandageMaterial->Set("s_ToonTerm", toonLut);
 			bandageMaterial->Set("u_Material.Shininess", 0.1f);
-
+			bandageMaterial->Set("u_Material.Steps", 8);
 		}
 
-		Material::Sptr bowMat = ResourceManager::CreateAsset<Material>(deferredForward);
+		Material::Sptr bowMat = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			bowMat->Name = "Bow";
-			bowMat->Set("u_Material.Diffuse", bowTexture);
-
+			bowMat->Name = "bow";
+			bowMat->Set("u_Material.AlbedoMap", bowTexture);
+			bowMat->Set("u_Material.NormalMap", normalMapDefault);
+			bowMat->Set("s_ToonTerm", toonLut);
+			bowMat->Set("u_Material.Shininess", 0.1f);
+			bowMat->Set("u_Material.Steps", 8);
 		}
 
-		Material::Sptr skeletonMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
+		Material::Sptr skeletonMaterial = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			skeletonMaterial->Name = "Skeleton";
+			skeletonMaterial->Name = "skele";
 			skeletonMaterial->Set("u_Material.Diffuse", skeletonTexture);
 			skeletonMaterial->Set("u_Material.Shininess", 0.1f);
 
+			skeletonMaterial->Set("s_ToonTerm", toonLut);
+			skeletonMaterial->Set("u_Material.Shininess", 0.1f);
+			skeletonMaterial->Set("u_Material.Steps", 8);
 		}
 
-		Material::Sptr floorMaterial = ResourceManager::CreateAsset<Material>(displacementShader);
+		Material::Sptr floorMaterial = ResourceManager::CreateAsset<Material>(celShader);
 		{
 			Texture2D::Sptr displacementMap = ResourceManager::CreateAsset<Texture2D>("textures/Ceiling1/plane_DefaultMaterial_Height.png");
 			Texture2D::Sptr normalMap = ResourceManager::CreateAsset<Texture2D>("textures/Ceiling1/plane_DefaultMaterial_Normal.png");
 
-			floorMaterial->Set("u_Material.Diffuse", floorTexture);
-			floorMaterial->Set("s_Heightmap", displacementMap);
-			floorMaterial->Set("s_NormalMap", normalMap);
-			floorMaterial->Set("u_Scale", 0.0f);
+			floorMaterial->Name = "floor 1";
+			floorMaterial->Set("u_Material.AlbedoMap", floorTexture);
+			floorMaterial->Set("u_Material.NormalMap", normalMapDefault);
+			floorMaterial->Set("s_ToonTerm", toonLut);
+			floorMaterial->Set("u_Material.Shininess", 0.1f);
+			floorMaterial->Set("u_Material.Steps", 8);
 
 		}
-
-		Material::Sptr BedMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
+		Material::Sptr BedMaterial = ResourceManager::CreateAsset<Material>(celShader);
 		{
-			BedMaterial->Name = "Bed";
-			BedMaterial->Set("u_Material.Diffuse", Bed);
+			BedMaterial->Name = "bed";
+			BedMaterial->Set("u_Material.AlbedoMap", Bed);
+			BedMaterial->Set("u_Material.NormalMap", normalMapDefault);
+			BedMaterial->Set("s_ToonTerm", toonLut);
 			BedMaterial->Set("u_Material.Shininess", 0.1f);
-
-		}
-
-
-		Material::Sptr displacementTest = ResourceManager::CreateAsset<Material>(displacementShader);
-		{
-			Texture2D::Sptr displacementMap = ResourceManager::CreateAsset<Texture2D>("textures/displacement_map.png");
-			Texture2D::Sptr normalMap = ResourceManager::CreateAsset<Texture2D>("textures/normal_map.png");
-			Texture2D::Sptr diffuseMap = ResourceManager::CreateAsset<Texture2D>("textures/bricks_diffuse.png");
-
-			displacementTest->Name = "Displacement Map";
-			displacementTest->Set("u_Material.Diffuse", diffuseMap);
-			displacementTest->Set("s_Heightmap", displacementMap);
-			displacementTest->Set("s_NormalMap", normalMap);
-			displacementTest->Set("u_Scale", 0.1f);
-		}
-
-		Material::Sptr boxMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
-		{
-			boxMaterial->Name = "Box";
-			boxMaterial->Set("u_Material.AlbedoMap", boxTexture);
-			boxMaterial->Set("u_Material.Shininess", 0.1f);
-			boxMaterial->Set("u_Material.NormalMap", normalMapDefault);
-		}
-
-		// This will be the reflective material, we'll make the whole thing 90% reflective
-		Material::Sptr monkeyMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
-		{
-			monkeyMaterial->Name = "Monkey";
-			monkeyMaterial->Set("u_Material.AlbedoMap", monkeyTex);
-			monkeyMaterial->Set("u_Material.NormalMap", normalMapDefault);
-			monkeyMaterial->Set("u_Material.Shininess", 0.5f);
-		}
-
-		// This will be the reflective material, we'll make the whole thing 50% reflective
-		Material::Sptr testMaterial = ResourceManager::CreateAsset<Material>(deferredForward); 
-		{
-			testMaterial->Name = "Box-Specular";
-			testMaterial->Set("u_Material.AlbedoMap", boxTexture); 
-			testMaterial->Set("u_Material.Specular", boxSpec);
-			testMaterial->Set("u_Material.NormalMap", normalMapDefault);
-		}
-
-		// Our foliage vertex shader material 
-		Material::Sptr foliageMaterial = ResourceManager::CreateAsset<Material>(foliageShader);
-		{
-			foliageMaterial->Name = "Foliage Shader";
-			foliageMaterial->Set("u_Material.AlbedoMap", leafTex);
-			foliageMaterial->Set("u_Material.Shininess", 0.1f);
-			foliageMaterial->Set("u_Material.DiscardThreshold", 0.1f);
-			foliageMaterial->Set("u_Material.NormalMap", normalMapDefault);
-
-			foliageMaterial->Set("u_WindDirection", glm::vec3(1.0f, 1.0f, 0.0f));
-			foliageMaterial->Set("u_WindStrength", 0.5f);
-			foliageMaterial->Set("u_VerticalScale", 1.0f);
-			foliageMaterial->Set("u_WindSpeed", 1.0f);
-		}
-
-		// Our toon shader material
-		Material::Sptr toonMaterial = ResourceManager::CreateAsset<Material>(celShader);
-		{
-			toonMaterial->Name = "Toon"; 
-			toonMaterial->Set("u_Material.AlbedoMap", boxTexture);
-			toonMaterial->Set("u_Material.NormalMap", normalMapDefault);
-			toonMaterial->Set("s_ToonTerm", toonLut);
-			toonMaterial->Set("u_Material.Shininess", 0.1f); 
-			toonMaterial->Set("u_Material.Steps", 8);
-		}
-
-		Material::Sptr grey = ResourceManager::CreateAsset<Material>(deferredForward);
-		{
-			grey->Name = "Grey";
-			grey->Set("u_Material.AlbedoMap", solidGreyTex);
-			grey->Set("u_Material.Specular", solidBlackTex);
-			grey->Set("u_Material.NormalMap", normalMapDefault);
-		}
-
-		Material::Sptr polka = ResourceManager::CreateAsset<Material>(deferredForward);
-		{
-			polka->Name = "Polka";
-			polka->Set("u_Material.AlbedoMap", ResourceManager::CreateAsset<Texture2D>("textures/polka.png"));
-			polka->Set("u_Material.Specular", solidBlackTex);
-			polka->Set("u_Material.NormalMap", normalMapDefault);
-			polka->Set("u_Material.EmissiveMap", ResourceManager::CreateAsset<Texture2D>("textures/polka.png"));
-		}
-
-		Material::Sptr whiteBrick = ResourceManager::CreateAsset<Material>(deferredForward);
-		{
-			whiteBrick->Name = "White Bricks";
-			whiteBrick->Set("u_Material.AlbedoMap", ResourceManager::CreateAsset<Texture2D>("textures/displacement_map.png"));
-			whiteBrick->Set("u_Material.Specular", solidGrey);
-			whiteBrick->Set("u_Material.NormalMap", ResourceManager::CreateAsset<Texture2D>("textures/normal_map.png"));
-		}
-
-		Material::Sptr multiTextureMat = ResourceManager::CreateAsset<Material>(multiTextureShader);
-		{
-			Texture2D::Sptr sand  = ResourceManager::CreateAsset<Texture2D>("textures/terrain/sand.png");
-			Texture2D::Sptr grass = ResourceManager::CreateAsset<Texture2D>("textures/terrain/grass.png");
-
-			multiTextureMat->Name = "Multitexturing";
-			multiTextureMat->Set("u_Material.DiffuseA", sand);
-			multiTextureMat->Set("u_Material.DiffuseB", grass);
-			multiTextureMat->Set("u_Material.NormalMapA", normalMapDefault);
-			multiTextureMat->Set("u_Material.NormalMapB", normalMapDefault);
-			multiTextureMat->Set("u_Material.Shininess", 0.5f);
-			multiTextureMat->Set("u_Scale", 0.1f); 
+			BedMaterial->Set("u_Material.Steps", 8);
 		}
 
 		// Create some lights for our scene
 		GameObject::Sptr lightParent = scene->CreateGameObject("Lights");
 
-		for (int ix = 0; ix < 50; ix++) {
+		for (int ix = 0; ix < 50; ix++)
+		{
 			GameObject::Sptr light = scene->CreateGameObject("Light");
 			light->SetPostion(glm::vec3(glm::diskRand(25.0f), 1.0f));
 			lightParent->AddChild(light);
@@ -707,10 +648,15 @@ void DefaultSceneLayer::_CreateScene()
 		// Set up the scene's camera
 		GameObject::Sptr camera = scene->MainCamera->GetGameObject()->SelfRef();
 		{
-			camera->SetPostion({ 1.0f, -1.0f, 1.0f });
+			camera->SetPostion(glm::vec3(1.0f, -1.0f, 1.0f));
 			camera->LookAt(glm::vec3(1, -12, 1));
 
 			camera->Add<SimpleCameraControl>();
+
+		//	Camera::Sptr cam = camera->Add<Camera>();
+
+			// Make sure that the camera is set as the scene's main camera!
+			//scene->MainCamera = cam;
 
 			RenderComponent::Sptr renderer = camera->Add<RenderComponent>();
 			renderer->SetMesh(bowMesh);
@@ -720,7 +666,6 @@ void DefaultSceneLayer::_CreateScene()
 			PlayerTrigger->AddCollider(SphereCollider::Create(0.75));
 			PlayerTrigger->SetLinearDamping(2.0f);
 		}
-
 		GameObject::Sptr loadedBolt = scene->CreateGameObject("fake Bolt");
 		{
 			// Set position in the scene
@@ -2035,12 +1980,6 @@ void DefaultSceneLayer::_CreateScene()
 		ResourceManager::SaveManifest("scene-manifest.json");
 		// Save the scene to a JSON file
 		scene->Save("scene.json");
-		// Disable alpha blending
-		glDisable(GL_BLEND);
-		// Disable scissor testing
-		glDisable(GL_SCISSOR_TEST);
-		// Re-enable depth writing
-		glDepthMask(GL_TRUE);
 
 		// Send the scene to the application
 		app.LoadScene(scene);

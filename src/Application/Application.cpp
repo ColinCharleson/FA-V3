@@ -44,6 +44,8 @@
 #include "Gameplay/Components/ParticleSystem.h"
 #include "Gameplay/Components/Light.h"
 #include "Gameplay/Components/ShadowCamera.h"
+
+//Custom Components
 #include <Gameplay\Components\ItemKeyBehaviour.h>
 #include <Gameplay\Components\ItemBandageBehaviour.h>
 #include <Gameplay\Components\ItemAmmoBehaviour.h>
@@ -62,16 +64,12 @@
 #include <Gameplay\Components\Bolt.h>
 #include <Gameplay\Components\AimPoint.h>
 #include <Gameplay\Components\EnemyAI.h>
+#include "Gameplay/Components/EnemyAiSpider.h"
+#include "Gameplay/Components/EnemyAiGolem.h"
 #include <Gameplay\Components\MorphMeshRenderer.h>
-#include <Gameplay\Components\MorphAnimator.h>
-#include <Gameplay\Components\Sound.h>
 #include "Gameplay/Physics/EnemyPath.h"
 #include "Gameplay/Physics/EnemyPathCatMull.h"
 #include "Gameplay/Physics/EnemyPathBezeir.h"
-#include <Gameplay\Components\EnemyAI.h>
-#include "Gameplay/Components/EnemyAiSpider.h"
-#include "Gameplay/Components/EnemyAiGolem.h"
-
 // GUI
 #include "Gameplay/Components/GUI/RectTransform.h"
 #include "Gameplay/Components/GUI/GuiPanel.h"
@@ -100,16 +98,15 @@ bool pausePressed;
 bool gameWin = false;
 bool gamePaused = false;
 bool levelComplete = false;
-
-#define DEFAULT_WINDOW_WIDTH 1920
-#define DEFAULT_WINDOW_HEIGHT 1080
+#define DEFAULT_WINDOW_WIDTH 1280
+#define DEFAULT_WINDOW_HEIGHT 720
 
 Application::Application() :
 	_window(nullptr),
 	_windowSize({DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT}),
 	_isRunning(false),
 	_isEditor(true),
-	_windowTitle("Forgotten Abyss"),
+	_windowTitle("INFR - 2350U"),
 	_currentScene(nullptr),
 	_targetScene(nullptr)
 { }
@@ -183,10 +180,6 @@ void Application::SaveSettings()
 
 void Application::_Run()
 {
-	Sound soundplay;
-	soundplay.init();
-	soundplay.loadsound("Music", "Sounds/title_screen.wav", true);
-	soundplay.playsound("Music");
 	// TODO: Register layers
 	_layers.push_back(std::make_shared<GLAppLayer>());
 	_layers.push_back(std::make_shared<LogicUpdateLayer>());
@@ -227,85 +220,7 @@ void Application::_Run()
 
 	// Infinite loop as long as the application is running
 	while (_isRunning) {
-
-
-		soundplay.update();
-		Sleep(16);
-
-		bool startPlaying = false;
-		if (InputEngine::IsKeyDown(GLFW_KEY_SPACE))
-		{
-
-			onMenu = false;
-			onUiHealth = true;
-			onUIBandage = true;
-			onUiAmmo = true;
-
-
-			startPlaying = true;
-		}
-
-		if (InputEngine::IsKeyDown(GLFW_KEY_W))
-		{
-			playerX = _currentScene->MainCamera->GetGameObject()->GetPosition().x;
-			playerY = _currentScene->MainCamera->GetGameObject()->GetPosition().y;
-		}
-		if (InputEngine::IsKeyDown(GLFW_KEY_A))
-		{
-			playerX = _currentScene->MainCamera->GetGameObject()->GetPosition().x;
-			playerY = _currentScene->MainCamera->GetGameObject()->GetPosition().y;
-		}
-		if (InputEngine::IsKeyDown(GLFW_KEY_S))
-		{
-			playerX = _currentScene->MainCamera->GetGameObject()->GetPosition().x;
-			playerY = _currentScene->MainCamera->GetGameObject()->GetPosition().y;
-		}
-		if (InputEngine::IsKeyDown(GLFW_KEY_D))
-		{
-			playerX = _currentScene->MainCamera->GetGameObject()->GetPosition().x;
-			playerY = _currentScene->MainCamera->GetGameObject()->GetPosition().y;
-
-		}
-
-		if (levelComplete)
-		{/*
-			if (progressScore < 1)
-			{
-				levelComplete = false;
-				hasKey = false;
-				RoomFunction();
-			}
-			else*/
-			{
-				gameWin = true;
-			}
-		}
-
-		bool pressed = glfwGetKey(_window, GLFW_KEY_ESCAPE);
-		if (pressed)
-		{
-			if (gameWin == false)
-			{
-				if (pausePressed == false)
-				{
-					gamePaused = !gamePaused;
-				}
-				pausePressed = pressed;
-			}
-			onUiHealth = false;
-			onUIBandage = false;
-			onUiAmmo = false;
-		}
-		else
-		{
-			pausePressed = false;
-		}
-
-		if (startPlaying == true)
-		{
-			glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		}
-
+		// Handle scene switching
 		if (_targetScene != nullptr) {
 			_HandleSceneChange();
 		}
@@ -394,17 +309,18 @@ void Application::_RegisterClasses()
 	ComponentManager::RegisterType<ParticleSystem>();
 	ComponentManager::RegisterType<Light>();
 	ComponentManager::RegisterType<ShadowCamera>();
+
+	//Custom Components 
+	ComponentManager::RegisterType<AimPoint>();
+	ComponentManager::RegisterType<Bolt>();
 	ComponentManager::RegisterType<EnemyBehaviour>();
 	ComponentManager::RegisterType<EnemyBehaviourSpider>();
 	ComponentManager::RegisterType<EnemyBehaviourGolem>();
 	ComponentManager::RegisterType<EnemyPath>();
 	ComponentManager::RegisterType<EnemyPathCatMull>();
 	ComponentManager::RegisterType<EnemyPathBezeir>();
-	// Register all of our component types so we can load them from files
 	ComponentManager::RegisterType<KeyBehaviour>();
 	ComponentManager::RegisterType<AmmoBehaviour>();
-	ComponentManager::RegisterType<Bolt>();
-	ComponentManager::RegisterType<AimPoint>();
 	ComponentManager::RegisterType<BandageBehaviour>();
 	ComponentManager::RegisterType<SpikeBehaviour>();
 	ComponentManager::RegisterType<SlimeBehaviour>();
@@ -414,7 +330,6 @@ void Application::_RegisterClasses()
 	ComponentManager::RegisterType<WinScreen>();
 	ComponentManager::RegisterType<LoseScreen>();
 	ComponentManager::RegisterType<MorphMeshRenderer>();
-	ComponentManager::RegisterType<Morphanimator>();
 	ComponentManager::RegisterType<HealthBehaviour>();
 	ComponentManager::RegisterType<HealthBehaviour2>();
 	ComponentManager::RegisterType<HealthBehaviour1>();
