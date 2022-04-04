@@ -28,13 +28,6 @@ void filmGrain::Apply(const Framebuffer::Sptr& gBuffer)
 
 void filmGrain::RenderImGui()
 {
-	const auto& cam = Application::Get().CurrentScene()->MainCamera;
-
-	if (cam != nullptr) {
-		ImGui::DragFloat("Focal Depth", &cam->FocalDepth, 0.1f, 0.1f, 100.0f);
-		ImGui::DragFloat("Lens Dist. ", &cam->LensDepth,  0.01f, 0.001f, 50.0f);
-		ImGui::DragFloat("Aperture   ", &cam->Aperture,   0.1f, 0.1f, 60.0f);
-	}
 }
 
 filmGrain::Sptr filmGrain::FromJson(const nlohmann::json& data)

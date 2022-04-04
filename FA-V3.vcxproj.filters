@@ -90,6 +90,9 @@
     <ClInclude Include="src\Application\Layers\PostProcessing\DepthOfField.h">
       <Filter>Application\Layers\PostProcessing</Filter>
     </ClInclude>
+    <ClInclude Include="src\Application\Layers\PostProcessing\FilmGrain.h">
+      <Filter>Application\Layers\PostProcessing</Filter>
+    </ClInclude>
     <ClInclude Include="src\Application\Layers\PostProcessing\OutlineEffect.h">
       <Filter>Application\Layers\PostProcessing</Filter>
     </ClInclude>
@@ -447,6 +450,9 @@
       <Filter>Application\Layers\PostProcessing</Filter>
     </ClCompile>
     <ClCompile Include="src\Application\Layers\PostProcessing\DepthOfField.cpp">
+      <Filter>Application\Layers\PostProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Application\Layers\PostProcessing\FilmGrain.cpp">
       <Filter>Application\Layers\PostProcessing</Filter>
     </ClCompile>
     <ClCompile Include="src\Application\Layers\PostProcessing\OutlineEffect.cpp">
