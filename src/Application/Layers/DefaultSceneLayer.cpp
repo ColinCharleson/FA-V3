@@ -1778,20 +1778,20 @@ void DefaultSceneLayer::_CreateScene()
 		/////////////////////////// UI //////////////////////////////
 
 		GameObject::Sptr UI = scene->CreateGameObject("UI Components");
-		GameObject::Sptr MenScreen = scene->CreateGameObject("Menu Screen");
-		{
-			RectTransform::Sptr transform = MenScreen->Add<RectTransform>();
-			transform->SetMin({ 1920, 1080, });
-			transform->SetMax({ 0, 0 });
-			transform->SetPosition(glm::vec3(960, 540, -100));
+		//GameObject::Sptr MenScreen = scene->CreateGameObject("Menu Screen");
+		//{
+		//	RectTransform::Sptr transform = MenScreen->Add<RectTransform>();
+		//	transform->SetMin({ 1920, 1080, });
+		//	transform->SetMax({ 0, 0 });
+		//	transform->SetPosition(glm::vec3(960, 540, -100));
 
-			GuiPanel::Sptr testPanel = MenScreen->Add<GuiPanel>();
-			//testPanel->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-			testPanel->SetTexture(menuPNG);
-			testPanel->SetBorderRadius(1920); //Tinker with 
+		//	GuiPanel::Sptr testPanel = MenScreen->Add<GuiPanel>();
+		//	//testPanel->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		//	testPanel->SetTexture(menuPNG);
+		//	testPanel->SetBorderRadius(1920); //Tinker with 
 
-			MenScreen->Add<MenuScreen>(); UI->AddChild(MenScreen);
-		}
+		//	MenScreen->Add<MenuScreen>(); UI->AddChild(MenScreen);
+		//}
 
 
 		GameObject::Sptr pausScreen = scene->CreateGameObject("Pause Screen");
