@@ -171,6 +171,8 @@ void DefaultSceneLayer::_CreateScene()
 		});
 		celShader->SetDebugName("Cel Shader");
 
+	
+		
 
 		// Load in the meshes
 		MeshResource::Sptr monkeyMesh = ResourceManager::CreateAsset<MeshResource>("Monkey.obj");
@@ -183,7 +185,7 @@ void DefaultSceneLayer::_CreateScene()
 		Texture2D::Sptr    leafTex      = ResourceManager::CreateAsset<Texture2D>("textures/leaves.png");
 		leafTex->SetMinFilter(MinFilter::Nearest);
 		leafTex->SetMagFilter(MagFilter::Nearest);
-
+		
 		// Load in some textures
 		MeshResource::Sptr spiderMesh = ResourceManager::CreateAsset<MeshResource>("SpiderMesh.obj");
 		MeshResource::Sptr chestMesh = ResourceManager::CreateAsset<MeshResource>("Chest.obj"); //1
@@ -206,7 +208,7 @@ void DefaultSceneLayer::_CreateScene()
 		Texture2D::Sptr    skeletonTexture = ResourceManager::CreateAsset<Texture2D>("textures/SkeletonTex.png");
 		MeshResource::Sptr finalBoss = ResourceManager::CreateAsset<MeshResource>("FinalBoss.obj");
 		Texture2D::Sptr    bossTexture = ResourceManager::CreateAsset<Texture2D>("textures/FinalBoss.png");
-
+		
 		MeshResource::Sptr wallMesh = ResourceManager::CreateAsset<MeshResource>("WallColin.obj");  //7
 		MeshResource::Sptr pillarMesh = ResourceManager::CreateAsset<MeshResource>("PillarLip.obj");  //7
 
