@@ -183,7 +183,7 @@ void Application::_Run()
 {
 	Sound soundplay;
 	soundplay.init();
-	soundplay.loadsound("Music", "Sounds/title_screen.wav", true);
+	soundplay.loadsound("Music", "res/Sounds/title_screen.wav", true);
 	soundplay.playsound("Music");
 	// TODO: Register layers
 	_layers.push_back(std::make_shared<GLAppLayer>());
