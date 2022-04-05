@@ -33,6 +33,7 @@
 #include "Gameplay/Scene.h"
 
 // Components
+#include "Gameplay/Components/Sound.h"
 #include "Gameplay/Components/IComponent.h"
 #include "Gameplay/Components/Camera.h"
 #include "Gameplay/Components/RotatingBehaviour.h"
@@ -180,6 +181,10 @@ void Application::SaveSettings()
 
 void Application::_Run()
 {
+	Sound soundplay;
+	soundplay.init();
+	soundplay.loadsound("Music", "Sounds/title_screen.wav", true);
+	soundplay.playsound("Music");
 	// TODO: Register layers
 	_layers.push_back(std::make_shared<GLAppLayer>());
 	_layers.push_back(std::make_shared<LogicUpdateLayer>());
@@ -220,6 +225,87 @@ void Application::_Run()
 
 	// Infinite loop as long as the application is running
 	while (_isRunning) {
+
+		soundplay.update();
+		Sleep(16);
+
+		bool startPlaying = false;
+		if (InputEngine::IsKeyDown(GLFW_KEY_SPACE))
+		{
+
+			onMenu = false;
+			onUiHealth = true;
+			onUIBandage = true;
+			onUiAmmo = true;
+
+
+			startPlaying = true;
+		}
+
+
+		if (InputEngine::IsKeyDown(GLFW_KEY_W))
+		{
+			playerX = _currentScene->MainCamera->GetGameObject()->GetPosition().x;
+			playerY = _currentScene->MainCamera->GetGameObject()->GetPosition().y;
+		}
+		if (InputEngine::IsKeyDown(GLFW_KEY_A))
+		{
+			playerX = _currentScene->MainCamera->GetGameObject()->GetPosition().x;
+			playerY = _currentScene->MainCamera->GetGameObject()->GetPosition().y;
+		}
+		if (InputEngine::IsKeyDown(GLFW_KEY_S))
+		{
+			playerX = _currentScene->MainCamera->GetGameObject()->GetPosition().x;
+			playerY = _currentScene->MainCamera->GetGameObject()->GetPosition().y;
+		}
+		if (InputEngine::IsKeyDown(GLFW_KEY_D))
+		{
+			playerX = _currentScene->MainCamera->GetGameObject()->GetPosition().x;
+			playerY = _currentScene->MainCamera->GetGameObject()->GetPosition().y;
+
+		}
+
+
+		if (levelComplete)
+		{/*
+			if (progressScore < 1)
+			{
+				levelComplete = false;
+				hasKey = false;
+				RoomFunction();
+			}
+			else*/
+			{
+				gameWin = true;
+			}
+		}
+
+		bool pressed = glfwGetKey(_window, GLFW_KEY_ESCAPE);
+		if (pressed)
+		{
+			if (gameWin == false)
+			{
+				if (pausePressed == false)
+				{
+					gamePaused = !gamePaused;
+				}
+				pausePressed = pressed;
+
+
+			}
+			onUiHealth = false;
+			onUIBandage = false;
+			onUiAmmo = false;
+		}
+		else
+		{
+			pausePressed = false;
+		}
+
+		if (startPlaying == true)
+		{
+			glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		}
 		// Handle scene switching
 		if (_targetScene != nullptr) {
 			_HandleSceneChange();
