@@ -237,10 +237,6 @@ void Application::_Run()
 			onUiHealth = true;
 			onUIBandage = true;
 			onUiAmmo = true;
-
-
-
-
 			startPlaying = true;
 		}
 

@@ -30,12 +30,12 @@ void PostProcessingLayer::AddEffect(const Effect::Sptr& effect) {
 void PostProcessingLayer::OnAppLoad(const nlohmann::json& config)
 {
 	// Loads some effects in
-	_effects.push_back(std::make_shared<ColorCorrectionEffect>());
-	_effects.push_back(std::make_shared<BoxFilter3x3>());
-	_effects.push_back(std::make_shared<BoxFilter5x5>());
-	_effects.push_back(std::make_shared<OutlineEffect>());
-	_effects.push_back(std::make_shared<DepthOfField>());
-	//_effects.push_back(std::make_shared<filmGrain>());
+	//_effects.push_back(std::make_shared<ColorCorrectionEffect>());
+	//_effects.push_back(std::make_shared<BoxFilter3x3>());
+	//_effects.push_back(std::make_shared<BoxFilter5x5>());
+	//_effects.push_back(std::make_shared<OutlineEffect>());
+	//_effects.push_back(std::make_shared<DepthOfField>());
+	_effects.push_back(std::make_shared<filmGrain>());
 
 	Application& app = Application::Get();
 	const glm::uvec4& viewport = app.GetPrimaryViewport();
