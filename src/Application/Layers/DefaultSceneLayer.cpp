@@ -1575,7 +1575,7 @@ void DefaultSceneLayer::_CreateScene()
 			frames.push_back(SpiderWalkAnim5);
 
 			SpiderWalkAnimator->SetInitial();
-			SpiderWalkAnimator->SetFrameTime(1.5f);
+			SpiderWalkAnimator->SetFrameTime(0.05f);
 			SpiderWalkAnimator->SetFrames(frames);
 
 			RigidBody::Sptr spider1RB = spider1->Add<RigidBody>(RigidBodyType::Dynamic);
