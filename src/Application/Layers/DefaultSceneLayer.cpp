@@ -1406,7 +1406,7 @@ void DefaultSceneLayer::_CreateScene()
 				pillar11->SetPostion(glm::vec3(7.5f, -15.f, 1.0f));
 				pillar11->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
 				pillar11->SetScale(glm::vec3(0.5f, 0.5f, 0.5f));
-
+				
 				// Create and attach a renderer for the modelF
 				RenderComponent::Sptr renderer = pillar11->Add<RenderComponent>();
 				renderer->SetMesh(pillarMesh);
@@ -1557,7 +1557,26 @@ void DefaultSceneLayer::_CreateScene()
 			renderer->SetMaterial(spiderMaterial);
 
 			spider1->Add<EnemyBehaviourSpider>();
+			MorphMeshRenderer::Sptr SpiderWalkAnim = spider1->Add<MorphMeshRenderer>();
+			SpiderWalkAnim->SetMorphMeshRenderer(spiderMesh, spiderMaterial);
+			Morphanimator::Sptr SpiderWalkAnimator = spider1->Add<Morphanimator>();
 
+			MeshResource::Sptr SpiderWalkAnim1 = ResourceManager::CreateAsset<MeshResource>("Animations/Spider/SpiderWalk_000000.obj");
+			MeshResource::Sptr SpiderWalkAnim2 = ResourceManager::CreateAsset<MeshResource>("Animations/Spider/SpiderWalk_000005.obj");
+			MeshResource::Sptr SpiderWalkAnim3 = ResourceManager::CreateAsset<MeshResource>("Animations/Spider/SpiderWalk_000010.obj");
+			MeshResource::Sptr SpiderWalkAnim4 = ResourceManager::CreateAsset<MeshResource>("Animations/Spider/SpiderWalk_000015.obj");
+			MeshResource::Sptr SpiderWalkAnim5 = ResourceManager::CreateAsset<MeshResource>("Animations/Spider/SpiderWalk_000020.obj");
+
+			std::vector<MeshResource::Sptr> frames;
+			frames.push_back(SpiderWalkAnim1);
+			frames.push_back(SpiderWalkAnim2);
+			frames.push_back(SpiderWalkAnim3);
+			frames.push_back(SpiderWalkAnim4);
+			frames.push_back(SpiderWalkAnim5);
+
+			SpiderWalkAnimator->SetInitial();
+			SpiderWalkAnimator->SetFrameTime(1.5f);
+			SpiderWalkAnimator->SetFrames(frames);
 
 			RigidBody::Sptr spider1RB = spider1->Add<RigidBody>(RigidBodyType::Dynamic);
 			BoxCollider::Sptr collider1 = BoxCollider::Create(glm::vec3(0.4f, 0.4f, 0.3f));
@@ -1623,7 +1642,7 @@ void DefaultSceneLayer::_CreateScene()
 			frames.push_back(golemWalkAnim5);
 
 			GolemWalkAnimator->SetInitial();
-			GolemWalkAnimator->SetFrameTime(0.5f);
+			GolemWalkAnimator->SetFrameTime(1.0f);
 			GolemWalkAnimator->SetFrames(frames);
 
 			RigidBody::Sptr golem1RB = golem1->Add<RigidBody>(RigidBodyType::Dynamic);
@@ -1648,7 +1667,24 @@ void DefaultSceneLayer::_CreateScene()
 			renderer->SetMesh(skeletonMesh);
 			renderer->SetMaterial(skeletonMaterial);
 
+			MorphMeshRenderer::Sptr SkeletonWalkAnim = skeleton1->Add<MorphMeshRenderer>();
+			SkeletonWalkAnim->SetMorphMeshRenderer(skeletonMesh, skeletonMaterial);
+			Morphanimator::Sptr SkeletonWalkAnimator = skeleton1->Add<Morphanimator>();
 
+			MeshResource::Sptr skeletonWalkAnim1 = ResourceManager::CreateAsset<MeshResource>("Animations/Skeleton/SkeletonWalk_000001.obj");
+			MeshResource::Sptr skeletonWalkAnim2 = ResourceManager::CreateAsset<MeshResource>("Animations/Skeleton/SkeletonWalk_000010.obj");
+			MeshResource::Sptr skeletonWalkAnim3 = ResourceManager::CreateAsset<MeshResource>("Animations/Skeleton/SkeletonWalk_000020.obj");
+			MeshResource::Sptr skeletonWalkAnim4 = ResourceManager::CreateAsset<MeshResource>("Animations/Skeleton/SkeletonWalk_000030.obj");
+			MeshResource::Sptr skeletonWalkAnim5 = ResourceManager::CreateAsset<MeshResource>("Animations/Skeleton/SkeletonWalk_000040.obj");
+
+			std::vector<MeshResource::Sptr> frames;
+			frames.push_back(skeletonWalkAnim1);
+			frames.push_back(skeletonWalkAnim2);
+			frames.push_back(skeletonWalkAnim3);
+			frames.push_back(skeletonWalkAnim4);
+			frames.push_back(skeletonWalkAnim5);
+
+			
 			skeleton1->Add<EnemyBehaviour>();
 			RigidBody::Sptr skeletonRB = skeleton1->Add<RigidBody>(RigidBodyType::Dynamic);
 			BoxCollider::Sptr collider4 = BoxCollider::Create(glm::vec3(0.35f, 1.2f, 0.35f));
@@ -1656,6 +1692,11 @@ void DefaultSceneLayer::_CreateScene()
 			skeletonRB->AddCollider(collider4);
 			skeletonRB->SetLinearDamping(1.f);
 			enemies->AddChild(skeleton1);
+
+			SkeletonWalkAnimator->SetInitial();
+			SkeletonWalkAnimator->SetFrameTime(0.7f);
+			SkeletonWalkAnimator->SetFrames(frames);
+
 		}
 
 
