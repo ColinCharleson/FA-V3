@@ -1605,9 +1605,26 @@ void DefaultSceneLayer::_CreateScene()
 			renderer->SetMaterial(golemMaterial);
 			golem1->Add<EnemyPath>();
 	
+			MorphMeshRenderer::Sptr GolemWalkAnim = golem1->Add<MorphMeshRenderer>();
+			GolemWalkAnim->SetMorphMeshRenderer(golemMesh, golemMaterial);
+			Morphanimator::Sptr GolemWalkAnimator = golem1->Add<Morphanimator>();
 			
-			
-			
+			MeshResource::Sptr golemWalkAnim1 = ResourceManager::CreateAsset<MeshResource>("Animations/Golem/GolemWalk_000001.obj");
+			MeshResource::Sptr golemWalkAnim2 = ResourceManager::CreateAsset<MeshResource>("Animations/Golem/GolemWalk_000020.obj");
+			MeshResource::Sptr golemWalkAnim3 = ResourceManager::CreateAsset<MeshResource>("Animations/Golem/GolemWalk_000040.obj");
+			MeshResource::Sptr golemWalkAnim4 = ResourceManager::CreateAsset<MeshResource>("Animations/Golem/GolemWalk_000060.obj");
+			MeshResource::Sptr golemWalkAnim5 = ResourceManager::CreateAsset<MeshResource>("Animations/Golem/GolemWalk_000080.obj");
+
+			std::vector<MeshResource::Sptr> frames;
+			frames.push_back(golemWalkAnim1);
+			frames.push_back(golemWalkAnim2);
+			frames.push_back(golemWalkAnim3);
+			frames.push_back(golemWalkAnim4);
+			frames.push_back(golemWalkAnim5);
+
+			GolemWalkAnimator->SetInitial();
+			GolemWalkAnimator->SetFrameTime(0.5f);
+			GolemWalkAnimator->SetFrames(frames);
 
 			RigidBody::Sptr golem1RB = golem1->Add<RigidBody>(RigidBodyType::Dynamic);
 			BoxCollider::Sptr collider3 = BoxCollider::Create(glm::vec3(0.4f, 0.8f, 0.4f));
