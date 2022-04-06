@@ -415,6 +415,7 @@ void Application::_RegisterClasses()
 	ComponentManager::RegisterType<WinScreen>();
 	ComponentManager::RegisterType<LoseScreen>();
 	ComponentManager::RegisterType<MorphMeshRenderer>();
+	ComponentManager::RegisterType<Morphanimator>();
 	ComponentManager::RegisterType<HealthBehaviour>();
 	ComponentManager::RegisterType<HealthBehaviour2>();
 	ComponentManager::RegisterType<HealthBehaviour1>();

@@ -30,7 +30,7 @@
 
 		void Update(float deltaTime) ;
 	
-
+		std::weak_ptr<Gameplay::IComponent> golem1;
 	public:
 		virtual void RenderImGui() override;
 		MAKE_TYPENAME(EnemyPath);
