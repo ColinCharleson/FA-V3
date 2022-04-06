@@ -1780,7 +1780,7 @@ void DefaultSceneLayer::_CreateScene()
 		GameObject::Sptr shadowCaster = scene->CreateGameObject("Shadow Light");
 		{
 			// Set position in the scene
-			shadowCaster->SetPostion(glm::vec3(3.0f, 3.0f, 5.0f));
+			shadowCaster->SetPostion(glm::vec3(1.0f, -7.0f, 2.0f));
 			shadowCaster->LookAt(glm::vec3(0.0f));
 
 			// Create and attach a renderer for the monkey
