@@ -252,7 +252,7 @@ void DefaultSceneLayer::_CreateScene()
 		Texture2D::Sptr    Crosshair = ResourceManager::CreateAsset<Texture2D>("textures/CH.png");
 		Texture2D::Sptr    Bandage = ResourceManager::CreateAsset<Texture2D>("textures/Bandaid.png");
 		// Load some images for drag n' drop
-		ResourceManager::CreateAsset<Texture2D>("textures/flashlight.png");
+		Texture2D::Sptr    lightEffect = ResourceManager::CreateAsset<Texture2D>("textures/flashlight.png");
 		ResourceManager::CreateAsset<Texture2D>("textures/flashlight-2.png");
 		ResourceManager::CreateAsset<Texture2D>("textures/light_projection.png");
 
@@ -1700,16 +1700,74 @@ void DefaultSceneLayer::_CreateScene()
 		}
 
 
+		GameObject::Sptr lights = scene->CreateGameObject("Lights");
+		/////////////////////////// Lights //////////////////////////////
 		GameObject::Sptr shadowCaster = scene->CreateGameObject("Shadow Light");
 		{
 			// Set position in the scene
-			shadowCaster->SetPostion(glm::vec3(1.0f, -7.0f, 2.0f));
-			shadowCaster->LookAt(glm::vec3(0.0f));
+			shadowCaster->SetPostion(glm::vec3(0.0f, -2.5f, 2.5f));
+			shadowCaster->SetRotation(glm::vec3(0.0f));
 
 			// Create and attach a renderer for the monkey
 			ShadowCamera::Sptr shadowCam = shadowCaster->Add<ShadowCamera>();
 			shadowCam->SetProjection(glm::perspective(glm::radians(120.0f), 1.0f, 0.1f, 100.0f));
+			shadowCam->SetColor(glm::vec4(1.0f, 0.5f, 0.0f, 0.6f));
+			shadowCam->SetProjectionMask(lightEffect);
+			lights->AddChild(shadowCaster);
 		}
+		GameObject::Sptr shadowCaster2 = scene->CreateGameObject("Shadow Light2");
+		{
+			// Set position in the scene
+			shadowCaster2->SetPostion(glm::vec3(0.0f, -12.f, 2.5f));
+			shadowCaster2->SetRotation(glm::vec3(0.0f));
+
+			// Create and attach a renderer for the monkey
+			ShadowCamera::Sptr shadowCam = shadowCaster2->Add<ShadowCamera>();
+			shadowCam->SetProjection(glm::perspective(glm::radians(120.0f), 1.0f, 0.1f, 100.0f));
+			shadowCam->SetColor(glm::vec4(1.0f, 0.5f, 0.0f, 0.6f));
+			shadowCam->SetProjectionMask(lightEffect);
+			lights->AddChild(shadowCaster2);
+		}
+		GameObject::Sptr shadowCaster3 = scene->CreateGameObject("Shadow Light3");
+		{
+			// Set position in the scene
+			shadowCaster3->SetPostion(glm::vec3(5.0f, -7.5f, 2.5f));
+			shadowCaster3->SetRotation(glm::vec3(0.0f));
+
+			// Create and attach a renderer for the monkey
+			ShadowCamera::Sptr shadowCam = shadowCaster3->Add<ShadowCamera>();
+			shadowCam->SetProjection(glm::perspective(glm::radians(120.0f), 1.0f, 0.1f, 100.0f));
+			shadowCam->SetColor(glm::vec4(1.0f, 0.5f, 0.0f, 0.6f));
+			shadowCam->SetProjectionMask(lightEffect);
+			lights->AddChild(shadowCaster3);
+		}
+		GameObject::Sptr shadowCaster4 = scene->CreateGameObject("Shadow Light4");
+		{
+			// Set position in the scene
+			shadowCaster4->SetPostion(glm::vec3(15.0f, -2.5f, 2.5f));
+			shadowCaster4->SetRotation(glm::vec3(0.0f));
+
+			// Create and attach a renderer for the monkey
+			ShadowCamera::Sptr shadowCam = shadowCaster4->Add<ShadowCamera>();
+			shadowCam->SetProjection(glm::perspective(glm::radians(120.0f), 1.0f, 0.1f, 100.0f));
+			shadowCam->SetColor(glm::vec4(1.0f, 0.5f, 0.0f, 0.6f));
+			shadowCam->SetProjectionMask(lightEffect);
+			lights->AddChild(shadowCaster4);
+		}
+		GameObject::Sptr shadowCaster5 = scene->CreateGameObject("Shadow Light5");
+		{
+			// Set position in the scene
+			shadowCaster5->SetPostion(glm::vec3(10.0f, -12.5f, 2.5f));
+			shadowCaster5->SetRotation(glm::vec3(0.0f));
+
+			// Create and attach a renderer for the monkey
+			ShadowCamera::Sptr shadowCam = shadowCaster5->Add<ShadowCamera>();
+			shadowCam->SetProjection(glm::perspective(glm::radians(120.0f), 1.0f, 0.1f, 100.0f));
+			shadowCam->SetColor(glm::vec4(1.0f, 0.5f, 0.0f, 0.6f));
+			shadowCam->SetProjectionMask(lightEffect);
+			lights->AddChild(shadowCaster5);
+		}
+
 		/////////////////////////// UI //////////////////////////////
 
 		GameObject::Sptr UI = scene->CreateGameObject("UI Components");
@@ -1721,7 +1779,6 @@ void DefaultSceneLayer::_CreateScene()
 			transform->SetPosition(glm::vec3(960, 540, -100));
 
 			GuiPanel::Sptr testPanel = MenScreen->Add<GuiPanel>();
-			testPanel->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 			testPanel->SetTexture(menuPNG);
 			testPanel->SetBorderRadius(1920); //Tinker with 
 
