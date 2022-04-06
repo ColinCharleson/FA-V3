@@ -71,17 +71,36 @@ extern float deathTime ;
 extern bool canShoot;
 
 extern bool gamePaused;
-
+int golemHealth1 = 3;
+float dmgTime3 = 0;
 
 bool isAlive = true;
 void EnemyPath::Update(float deltaTime)
 {
+	Gameplay::IComponent::Sptr enemy = golem1.lock();
 	if (gamePaused == false)
 	{
 		if ((sqrt(pow(GetGameObject()->GetPosition().x - boltX, 2) + pow(GetGameObject()->GetPosition().y - boltY, 2) + pow(GetGameObject()->GetPosition().z - boltZ, 2) * 2)) <= 1.0f)
 		{
 			if (arrowOut == true)
-				isAlive = false;
+			{
+				golemHealth1 -= 1;
+				if (dmgTime3 <= 0)
+				{
+					golemHealth1 -= 1;
+					std::cout << golemHealth1;
+					dmgTime3 = 2;
+
+					if (golemHealth1 == 0)
+					{
+						GetGameObject()->GetScene()->RemoveGameObject(GetGameObject()->SelfRef());
+					}
+				}
+			}
+		}
+		if (dmgTime3 >= 0)
+		{
+			dmgTime3 -= 1 * deltaTime;
 		}
 
 		if (isAlive == true)

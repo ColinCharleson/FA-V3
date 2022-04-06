@@ -48,6 +48,7 @@
 #include "Gameplay/Components/MaterialSwapBehaviour.h"
 #include "Gameplay/Components/TriggerVolumeEnterBehaviour.h"
 #include "Gameplay/Components/SimpleCameraControl.h"
+#include "Gameplay/Components/MaterialSwapBehaviour.h"
 //Custom Components
 #include <Gameplay\Components\ItemKeyBehaviour.h>
 #include <Gameplay\Components\ItemBandageBehaviour.h>
@@ -254,7 +255,7 @@ void DefaultSceneLayer::_CreateScene()
 		ResourceManager::CreateAsset<Texture2D>("textures/flashlight-2.png");
 		ResourceManager::CreateAsset<Texture2D>("textures/light_projection.png");
 
-		DebugWindow::Sptr debugWindow = app.GetLayer<ImGuiDebugLayer>()->GetWindow<DebugWindow>();
+		
 
 #pragma region Basic Texture Creation
 		Texture2DDescription singlePixelDescriptor;
@@ -1602,6 +1603,10 @@ void DefaultSceneLayer::_CreateScene()
 			renderer->SetMesh(golemMesh);
 			renderer->SetMaterial(golemMaterial);
 			golem1->Add<EnemyPath>();
+	
+			
+			
+			
 
 			RigidBody::Sptr golem1RB = golem1->Add<RigidBody>(RigidBodyType::Dynamic);
 			BoxCollider::Sptr collider3 = BoxCollider::Create(glm::vec3(0.4f, 0.8f, 0.4f));

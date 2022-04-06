@@ -71,6 +71,8 @@ void EnemyBehaviourGolem::Update(float deltaTime)
 					cout << golemHealth;
 					dmgTime2 = 2;
 
+
+
 					if (golemHealth == 0)
 					{
 						GetGameObject()->GetScene()->RemoveGameObject(GetGameObject()->SelfRef());
