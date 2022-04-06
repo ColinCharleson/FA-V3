@@ -1775,6 +1775,18 @@ void DefaultSceneLayer::_CreateScene()
 			skeletonRB->SetLinearDamping(1.f);
 			enemies->AddChild(skeleton1);
 		}
+
+
+		GameObject::Sptr shadowCaster = scene->CreateGameObject("Shadow Light");
+		{
+			// Set position in the scene
+			shadowCaster->SetPostion(glm::vec3(3.0f, 3.0f, 5.0f));
+			shadowCaster->LookAt(glm::vec3(0.0f));
+
+			// Create and attach a renderer for the monkey
+			ShadowCamera::Sptr shadowCam = shadowCaster->Add<ShadowCamera>();
+			shadowCam->SetProjection(glm::perspective(glm::radians(120.0f), 1.0f, 0.1f, 100.0f));
+		}
 		/////////////////////////// UI //////////////////////////////
 
 		GameObject::Sptr UI = scene->CreateGameObject("UI Components");
