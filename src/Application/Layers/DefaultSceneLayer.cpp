@@ -70,6 +70,7 @@
 #include "Gameplay/Components/EnemyAiSpider.h"
 #include "Gameplay/Components/EnemyAiGolem.h"
 #include <Gameplay\Components\MorphMeshRenderer.h>
+#include <Gameplay\Components\MorphAnimator.h>
 #include "Gameplay/Physics/EnemyPath.h"
 #include "Gameplay/Physics/EnemyPathCatMull.h"
 #include "Gameplay/Physics/EnemyPathBezeir.h"
