@@ -43,14 +43,15 @@ extern bool onMenu;
 extern bool onUIBandage;
 void BandageCount::Update(float deltaTime) {
 
-	Gameplay::IComponent::Sptr ptr = BandagePack.lock();
+	Gameplay::IComponent::Sptr ptr1 = BandagePack.lock();
 	if (onUIBandage == true)
-	
+	{
 
-		if (onMenu == false)
+	   if (onMenu == false)
 		{
-			ptr->IsEnabled = true;
+			ptr1->IsEnabled = true;
 		}
+
 
 		if (bandageCount == 2)
 			GetGameObject()->Get<GuiText>()->SetText("2");
@@ -58,6 +59,9 @@ void BandageCount::Update(float deltaTime) {
 			GetGameObject()->Get<GuiText>()->SetText("1");
 		if (bandageCount == 0)
 			GetGameObject()->Get<GuiText>()->SetText("0");
+	}
+		
+
 	
 	
 

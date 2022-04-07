@@ -76,6 +76,8 @@
 #include "Gameplay/Physics/EnemyPath.h"
 #include "Gameplay/Physics/EnemyPathCatMull.h"
 #include "Gameplay/Physics/EnemyPathBezeir.h"
+#include <Gameplay\Components\BandageUI.h>
+#include "Gameplay/Components/NormalAmmoUI.h"
 
 // Physics
 #include "Gameplay/Physics/RigidBody.h"
@@ -1607,6 +1609,27 @@ void DefaultSceneLayer::_CreateScene()
 			renderer->SetMaterial(spiderMaterial);
 
 			spider2->Add<EnemyBehaviourSpider>();
+			MorphMeshRenderer::Sptr SpiderWalkAnim = spider2->Add<MorphMeshRenderer>();
+			SpiderWalkAnim->SetMorphMeshRenderer(spiderMesh, spiderMaterial);
+			Morphanimator::Sptr SpiderWalkAnimator = spider2->Add<Morphanimator>();
+
+			MeshResource::Sptr SpiderWalkAnim1 = ResourceManager::CreateAsset<MeshResource>("Animations/Spider/SpiderWalk_000000.obj");
+			MeshResource::Sptr SpiderWalkAnim2 = ResourceManager::CreateAsset<MeshResource>("Animations/Spider/SpiderWalk_000005.obj");
+			MeshResource::Sptr SpiderWalkAnim3 = ResourceManager::CreateAsset<MeshResource>("Animations/Spider/SpiderWalk_000010.obj");
+			MeshResource::Sptr SpiderWalkAnim4 = ResourceManager::CreateAsset<MeshResource>("Animations/Spider/SpiderWalk_000015.obj");
+			MeshResource::Sptr SpiderWalkAnim5 = ResourceManager::CreateAsset<MeshResource>("Animations/Spider/SpiderWalk_000020.obj");
+
+			std::vector<MeshResource::Sptr> frames;
+			frames.push_back(SpiderWalkAnim1);
+			frames.push_back(SpiderWalkAnim2);
+			frames.push_back(SpiderWalkAnim3);
+			frames.push_back(SpiderWalkAnim4);
+			frames.push_back(SpiderWalkAnim5);
+
+			SpiderWalkAnimator->SetInitial();
+			SpiderWalkAnimator->SetFrameTime(0.05f);
+			SpiderWalkAnimator->SetFrames(frames);
+
 
 			RigidBody::Sptr spider2RB = spider2->Add<RigidBody>(RigidBodyType::Dynamic);
 			BoxCollider::Sptr collider2 = BoxCollider::Create(glm::vec3(0.4f, 0.4f, 0.3f));
@@ -1861,6 +1884,7 @@ void DefaultSceneLayer::_CreateScene()
 			pausScreen->Add<PauseScreen>();
 			pausScreen->Get<PauseScreen>()->testPanel = testPanel; UI->AddChild(pausScreen);
 		}
+
 		GameObject::Sptr WinnerScreen = scene->CreateGameObject("Winner Screen");
 		{
 			RectTransform::Sptr transform = WinnerScreen->Add<RectTransform>();
@@ -1898,61 +1922,73 @@ void DefaultSceneLayer::_CreateScene()
 
 		GameObject::Sptr BandagePack = scene->CreateGameObject("Bandage UI");
 		{
-
+			glEnable(GL_BLEND);
 			BandagePack->RenderGUI();
 			RectTransform::Sptr transform = BandagePack->Add<RectTransform>();
-
 			transform->SetPosition(glm::vec2(220, 920));
 			transform->SetSize(glm::vec2(140, 50));
-
 			GuiPanel::Sptr testPanel = BandagePack->Add<GuiPanel>();
-
 			testPanel->SetTexture(Bandage);
 			testPanel->SetBorderRadius(0); //Tinker with
 			testPanel->IsEnabled = false;
 
 
-			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
-			font->Bake();
-
-			GuiText::Sptr text = BandagePack->Add<GuiText>();
-			text->SetText(std::to_string(bandageCount));
-			text->SetFont(font);
-			text->SetColor(glm::vec4(0, 1, 0, 0));
-
-
-
-			BandagePack->Add<BandageCount>()->BandagePack = testPanel;
+			BandagePack->Add<BandageUI>()->Bandageui= testPanel;
 			UI->AddChild(BandagePack);
 		}
 
-		GameObject::Sptr AmmoPack = scene->CreateGameObject("Ammo UI");
+		GameObject::Sptr BandageText = scene->CreateGameObject("Bandage txt");
 		{
-
-			AmmoPack->RenderGUI();
-			//glEnable(GL_BLEND);
-			RectTransform::Sptr transform = AmmoPack->Add<RectTransform>();
-
-			transform->SetPosition(glm::vec2(1700, 920));
-			transform->SetSize(glm::vec2(99, 50));
-
-			GuiPanel::Sptr testPanel = AmmoPack->Add<GuiPanel>();
-
-			testPanel->SetTexture(ammoHUD);
-			testPanel->SetBorderRadius(10); //Tinker with
-			testPanel->IsEnabled = false;
-
+			glEnable(GL_BLEND);
+			RectTransform::Sptr transform = BandageText->Add<RectTransform>();
+			transform->SetPosition(glm::vec3(223, 975, 12));
 			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
 			font->Bake();
+			GuiText::Sptr text = BandageText->Add<GuiText>();
+			text->SetText(std::to_string(bandageCount));
+			text->SetFont(font);
+			text->SetColor(glm::vec4(1, 1, 0, 1));
+			text->IsEnabled = false;
+		  
 
-			GuiText::Sptr text = AmmoPack->Add<GuiText>();
+			BandageText->Add<BandageCount>()->BandagePack = text;
+			UI->AddChild(BandageText);
+		}
+
+
+
+		GameObject::Sptr AmmoPack = scene->CreateGameObject("Ammo UI");
+		{
+			glEnable(GL_BLEND);
+			AmmoPack->RenderGUI();
+			RectTransform::Sptr transform1 = AmmoPack->Add<RectTransform>();
+			transform1->SetPosition(glm::vec2(1700, 920));
+			transform1->SetSize(glm::vec2(99, 50));
+			GuiPanel::Sptr testPanel1 = AmmoPack->Add<GuiPanel>();
+			testPanel1->SetTexture(ammoHUD);
+			testPanel1->SetBorderRadius(10); //Tinker with
+			testPanel1->IsEnabled = false;
+			AmmoPack->Add<NormalAmmoUI>()->AmmoPackUI = testPanel1;
+			UI->AddChild(AmmoPack);
+		}
+
+		GameObject::Sptr AmmoText = scene->CreateGameObject("Ammo txt");
+		{
+
+			glEnable(GL_BLEND);
+			RectTransform::Sptr transform = AmmoText->Add<RectTransform>();
+			transform->SetPosition(glm::vec3(1700, 975, 50));
+			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
+			font->Bake();
+			GuiText::Sptr text = AmmoText->Add<GuiText>();
 			text->SetText(std::to_string(ammoCount));
 			text->SetFont(font);
+			text->SetColor(glm::vec4(1, 1, 0, 1));
+			text->IsEnabled = false;
 
-			text->SetColor(glm::vec4(0, 1, 0, 0));
 
-			AmmoPack->Add<NormalAmmo>()->AmmoPack = testPanel;
-			UI->AddChild(AmmoPack);
+			AmmoText->Add<NormalAmmo>()->AmmoPack = text;
+			UI->AddChild(AmmoText);
 		}
 
 

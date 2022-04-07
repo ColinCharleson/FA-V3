@@ -44,11 +44,13 @@ void NormalAmmo::Update(float deltaTime) {
 
 	Gameplay::IComponent::Sptr ptr = AmmoPack.lock();
 	if (onUiAmmo == true)
-	
+	{
 
 		if (onMenu == false)
 		{
 			ptr->IsEnabled = true;
+
+
 		}
 
 		if (ammoCount == 11)
@@ -75,6 +77,11 @@ void NormalAmmo::Update(float deltaTime) {
 			GetGameObject()->Get<GuiText>()->SetText("1");
 		if (ammoCount == 0)
 			GetGameObject()->Get<GuiText>()->SetText("0");
+	}
+
+		
+
+		
 
 	
 }
