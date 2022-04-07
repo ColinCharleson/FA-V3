@@ -937,7 +937,7 @@ void DefaultSceneLayer::_CreateScene()
 			renderer->SetMaterial(bonesMaterial);
 			deccor->AddChild(ribcage4);
 		}
-		/* {//walls start///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		{//walls start///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			GameObject::Sptr wall = scene->CreateGameObject("Walls");
 
 			GameObject::Sptr wall1 = scene->CreateGameObject("wall 1");
@@ -1546,7 +1546,7 @@ void DefaultSceneLayer::_CreateScene()
 				pillar->AddChild(pillar20);
 			}
 		} // pillar end
-		*/
+		
 
 		GameObject::Sptr enemies = scene->CreateGameObject("Enemies");
 		GameObject::Sptr spider1 = scene->CreateGameObject("Spider");
