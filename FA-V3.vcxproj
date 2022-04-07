@@ -137,6 +137,7 @@
     <ClInclude Include="src\Application\Windows\TextureWindow.h" />
     <ClInclude Include="src\Gameplay\Components\AimPoint.h" />
     <ClInclude Include="src\Gameplay\Components\BandageCount.h" />
+    <ClInclude Include="src\Gameplay\Components\BandageUI.h" />
     <ClInclude Include="src\Gameplay\Components\Bolt.h" />
     <ClInclude Include="src\Gameplay\Components\Camera.h" />
     <ClInclude Include="src\Gameplay\Components\ComponentManager.h" />
@@ -162,6 +163,7 @@
     <ClInclude Include="src\Gameplay\Components\MorphAnimator.h" />
     <ClInclude Include="src\Gameplay\Components\MorphMeshRenderer.h" />
     <ClInclude Include="src\Gameplay\Components\NormalAmmoCount.h" />
+    <ClInclude Include="src\Gameplay\Components\NormalAmmoUI.h" />
     <ClInclude Include="src\Gameplay\Components\ParticleSystem.h" />
     <ClInclude Include="src\Gameplay\Components\PauseScreenBehaviour.h" />
     <ClInclude Include="src\Gameplay\Components\RenderComponent.h" />
@@ -258,6 +260,7 @@
     <ClCompile Include="src\Application\Windows\TextureWindow.cpp" />
     <ClCompile Include="src\Gameplay\Components\AimPoint.cpp" />
     <ClCompile Include="src\Gameplay\Components\BandageCount.cpp" />
+    <ClCompile Include="src\Gameplay\Components\BandageUI.cpp" />
     <ClCompile Include="src\Gameplay\Components\Bolt.cpp" />
     <ClCompile Include="src\Gameplay\Components\Camera.cpp" />
     <ClCompile Include="src\Gameplay\Components\DoorBehaviour.cpp" />
@@ -282,6 +285,7 @@
     <ClCompile Include="src\Gameplay\Components\MorphAnimator.cpp" />
     <ClCompile Include="src\Gameplay\Components\MorphMeshRenderer.cpp" />
     <ClCompile Include="src\Gameplay\Components\NormalAmmoCount.cpp" />
+    <ClCompile Include="src\Gameplay\Components\NormalAmmoUI.cpp" />
     <ClCompile Include="src\Gameplay\Components\ParticleSystem.cpp" />
     <ClCompile Include="src\Gameplay\Components\PauseScreenBehaviour.cpp" />
     <ClCompile Include="src\Gameplay\Components\RenderComponent.cpp" />

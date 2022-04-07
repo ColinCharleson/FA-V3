@@ -1614,6 +1614,27 @@ void DefaultSceneLayer::_CreateScene()
 			renderer->SetMaterial(spiderMaterial);
 
 			spider2->Add<EnemyBehaviourSpider>();
+			MorphMeshRenderer::Sptr SpiderWalkAnim = spider2->Add<MorphMeshRenderer>();
+			SpiderWalkAnim->SetMorphMeshRenderer(spiderMesh, spiderMaterial);
+			Morphanimator::Sptr SpiderWalkAnimator = spider2->Add<Morphanimator>();
+
+			MeshResource::Sptr SpiderWalkAnim1 = ResourceManager::CreateAsset<MeshResource>("Animations/Spider/SpiderWalk_000000.obj");
+			MeshResource::Sptr SpiderWalkAnim2 = ResourceManager::CreateAsset<MeshResource>("Animations/Spider/SpiderWalk_000005.obj");
+			MeshResource::Sptr SpiderWalkAnim3 = ResourceManager::CreateAsset<MeshResource>("Animations/Spider/SpiderWalk_000010.obj");
+			MeshResource::Sptr SpiderWalkAnim4 = ResourceManager::CreateAsset<MeshResource>("Animations/Spider/SpiderWalk_000015.obj");
+			MeshResource::Sptr SpiderWalkAnim5 = ResourceManager::CreateAsset<MeshResource>("Animations/Spider/SpiderWalk_000020.obj");
+
+			std::vector<MeshResource::Sptr> frames;
+			frames.push_back(SpiderWalkAnim1);
+			frames.push_back(SpiderWalkAnim2);
+			frames.push_back(SpiderWalkAnim3);
+			frames.push_back(SpiderWalkAnim4);
+			frames.push_back(SpiderWalkAnim5);
+
+			SpiderWalkAnimator->SetInitial();
+			SpiderWalkAnimator->SetFrameTime(0.05f);
+			SpiderWalkAnimator->SetFrames(frames);
+
 
 			RigidBody::Sptr spider2RB = spider2->Add<RigidBody>(RigidBodyType::Dynamic);
 			BoxCollider::Sptr collider2 = BoxCollider::Create(glm::vec3(0.4f, 0.4f, 0.3f));
