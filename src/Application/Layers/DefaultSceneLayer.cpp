@@ -229,6 +229,9 @@ void DefaultSceneLayer::_CreateScene()
 		Texture2D::Sptr    doorTexture = ResourceManager::CreateAsset<Texture2D>("textures/DoorTexture.png");
 		Texture2D::Sptr    floorTexture = ResourceManager::CreateAsset<Texture2D>("textures/Base.png");
 		MeshResource::Sptr BedMesh = ResourceManager::CreateAsset<MeshResource>("Bed.obj");
+		MeshResource::Sptr Lantern = ResourceManager::CreateAsset<MeshResource>("Lantern.obj");
+		Texture2D::Sptr    lantex = ResourceManager::CreateAsset<Texture2D>("textures/Lantern.png");
+		Texture2D::Sptr    lantexemi = ResourceManager::CreateAsset<Texture2D>("textures/LanternEmissive.png");
 		Texture2D::Sptr    Bed = ResourceManager::CreateAsset<Texture2D>("textures/BedTex.png");
 
 		Texture2D::Sptr    healthBar = ResourceManager::CreateAsset<Texture2D>("textures/OperationHealthFull.png");
@@ -309,6 +312,14 @@ void DefaultSceneLayer::_CreateScene()
 			golemMaterial->Set("u_Material.AlbedoMap", golemTexture);
 			golemMaterial->Set("u_Material.EmissiveMap", golemTextureEmissive);
 			golemMaterial->Set("u_Material.NormalMap", normalMap);
+		}
+		Material::Sptr lanternMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
+		{
+			Texture2D::Sptr normalMap = ResourceManager::CreateAsset<Texture2D>("textures/DefMap.png");
+			lanternMaterial->Name = "golemMaterial";
+			lanternMaterial->Set("u_Material.AlbedoMap", lantex);
+			lanternMaterial->Set("u_Material.EmissiveMap", lantexemi);
+			lanternMaterial->Set("u_Material.NormalMap", normalMap);
 		}
 
 		Material::Sptr chainMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
@@ -1591,7 +1602,7 @@ void DefaultSceneLayer::_CreateScene()
 		{
 			// Set position in the scene
 			spider2->SetPostion(glm::vec3(-6.0f, -11.0f, 0.0f));
-			spider2->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
+			spider2->SetRotation(glm::vec3(90.0f, 0.0f, -90.0f));
 			spider2->SetScale(glm::vec3(0.6f, 0.6f, 0.6f));
 
 
@@ -1700,13 +1711,21 @@ void DefaultSceneLayer::_CreateScene()
 		}
 
 
-		GameObject::Sptr lights = scene->CreateGameObject("Lights");
+		GameObject::Sptr lights = scene->CreateGameObject("Lights/Particles");
 		/////////////////////////// Lights //////////////////////////////
 		GameObject::Sptr shadowCaster = scene->CreateGameObject("Shadow Light");
 		{
 			// Set position in the scene
-			shadowCaster->SetPostion(glm::vec3(0.0f, -2.5f, 2.5f));
+			shadowCaster->SetPostion(glm::vec3(0.0f, -2.5f, 2.0f));
 			shadowCaster->SetRotation(glm::vec3(0.0f));
+
+			RenderComponent::Sptr renderer = shadowCaster->Add<RenderComponent>();
+			renderer->SetMesh(Lantern);
+			renderer->SetMaterial(lanternMaterial);
+
+			ParticleSystem::Sptr particleManager = shadowCaster->Add<ParticleSystem>();
+			particleManager->AddEmitter(glm::vec3(0.0f, 0.0f, 0.1f), glm::vec3(0.0f, 0.0f, 0.3f), 10.f, glm::vec4(1.0f, 0.3f, 0.0f, 1.0f), 0.08f);
+			//particleManager->l
 
 			// Create and attach a renderer for the monkey
 			ShadowCamera::Sptr shadowCam = shadowCaster->Add<ShadowCamera>();
@@ -1718,8 +1737,15 @@ void DefaultSceneLayer::_CreateScene()
 		GameObject::Sptr shadowCaster2 = scene->CreateGameObject("Shadow Light2");
 		{
 			// Set position in the scene
-			shadowCaster2->SetPostion(glm::vec3(0.0f, -12.f, 2.5f));
+			shadowCaster2->SetPostion(glm::vec3(0.0f, -12.f, 2.0f));
 			shadowCaster2->SetRotation(glm::vec3(0.0f));
+
+			RenderComponent::Sptr renderer = shadowCaster2->Add<RenderComponent>();
+			renderer->SetMesh(Lantern);
+			renderer->SetMaterial(lanternMaterial);
+
+			ParticleSystem::Sptr particleManager = shadowCaster2->Add<ParticleSystem>();
+			particleManager->AddEmitter(glm::vec3(0.0f, 0.0f, 0.1f), glm::vec3(0.0f, 0.0f, 0.3f), 10.f, glm::vec4(1.0f, 0.3f, 0.0f, 1.0f), 0.08f);
 
 			// Create and attach a renderer for the monkey
 			ShadowCamera::Sptr shadowCam = shadowCaster2->Add<ShadowCamera>();
@@ -1731,8 +1757,15 @@ void DefaultSceneLayer::_CreateScene()
 		GameObject::Sptr shadowCaster3 = scene->CreateGameObject("Shadow Light3");
 		{
 			// Set position in the scene
-			shadowCaster3->SetPostion(glm::vec3(5.0f, -7.5f, 2.5f));
+			shadowCaster3->SetPostion(glm::vec3(5.0f, -7.5f, 2.0f));
 			shadowCaster3->SetRotation(glm::vec3(0.0f));
+
+			RenderComponent::Sptr renderer = shadowCaster3->Add<RenderComponent>();
+			renderer->SetMesh(Lantern);
+			renderer->SetMaterial(lanternMaterial);
+
+			ParticleSystem::Sptr particleManager = shadowCaster3->Add<ParticleSystem>();
+			particleManager->AddEmitter(glm::vec3(0.0f, 0.0f, 0.1f), glm::vec3(0.0f, 0.0f, 0.3f), 10.f, glm::vec4(1.0f, 0.3f, 0.0f, 1.0f), 0.08f);
 
 			// Create and attach a renderer for the monkey
 			ShadowCamera::Sptr shadowCam = shadowCaster3->Add<ShadowCamera>();
@@ -1744,9 +1777,16 @@ void DefaultSceneLayer::_CreateScene()
 		GameObject::Sptr shadowCaster4 = scene->CreateGameObject("Shadow Light4");
 		{
 			// Set position in the scene
-			shadowCaster4->SetPostion(glm::vec3(15.0f, -2.5f, 2.5f));
+			shadowCaster4->SetPostion(glm::vec3(15.0f, -2.5f, 2.0f));
 			shadowCaster4->SetRotation(glm::vec3(0.0f));
 
+			RenderComponent::Sptr renderer = shadowCaster4->Add<RenderComponent>();
+			renderer->SetMesh(Lantern);
+			renderer->SetMaterial(lanternMaterial);
+
+			ParticleSystem::Sptr particleManager = shadowCaster4->Add<ParticleSystem>();
+			particleManager->AddEmitter(glm::vec3(0.0f, 0.0f, 0.1f), glm::vec3(0.0f, 0.0f, 0.3f), 10.f, glm::vec4(1.0f, 0.3f, 0.0f, 1.0f), 0.08f);
+			
 			// Create and attach a renderer for the monkey
 			ShadowCamera::Sptr shadowCam = shadowCaster4->Add<ShadowCamera>();
 			shadowCam->SetProjection(glm::perspective(glm::radians(120.0f), 1.0f, 0.1f, 100.0f));
@@ -1757,8 +1797,15 @@ void DefaultSceneLayer::_CreateScene()
 		GameObject::Sptr shadowCaster5 = scene->CreateGameObject("Shadow Light5");
 		{
 			// Set position in the scene
-			shadowCaster5->SetPostion(glm::vec3(10.0f, -12.5f, 2.5f));
+			shadowCaster5->SetPostion(glm::vec3(10.0f, -12.5f, 2.0f));
 			shadowCaster5->SetRotation(glm::vec3(0.0f));
+
+			RenderComponent::Sptr renderer = shadowCaster5->Add<RenderComponent>();
+			renderer->SetMesh(Lantern);
+			renderer->SetMaterial(lanternMaterial);
+
+			ParticleSystem::Sptr particleManager = shadowCaster5->Add<ParticleSystem>();
+			particleManager->AddEmitter(glm::vec3(0.0f, 0.0f, 0.1f), glm::vec3(0.0f, 0.0f, 0.3f), 10.f, glm::vec4(1.0f, 0.3f, 0.0f, 1.0f), 0.08f);
 
 			// Create and attach a renderer for the monkey
 			ShadowCamera::Sptr shadowCam = shadowCaster5->Add<ShadowCamera>();
