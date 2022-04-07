@@ -56,6 +56,7 @@
 #include <Gameplay\Components\DoorBehaviour.h>
 #include <Gameplay\Components\SlimeBehaviour.h>
 #include <Gameplay\Components\PauseScreenBehaviour.h>
+#include <Gameplay\Components\HelpScreenBehaviour.h>
 #include <Gameplay\Components\MenuScreenBehaviour.h>
 #include <Gameplay\Components\HealthBar.h>
 #include <Gameplay\Components\HealthBar2HP.h>
@@ -145,6 +146,13 @@ void DefaultSceneLayer::_CreateScene()
 		});
 		deferredForward->SetDebugName("Deferred - GBuffer Generation");  
 
+		// Basic gbuffer generation with no vertex manipulation
+		ShaderProgram::Sptr golemShader = ResourceManager::CreateAsset<ShaderProgram>(std::unordered_map<ShaderPartType, std::string>{
+			{ ShaderPartType::Vertex, "shaders/vertex_shaders/basic.glsl" },
+			{ ShaderPartType::Fragment, "shaders/fragment_shaders/golemShader.glsl" }
+		});
+		deferredForward->SetDebugName("Deferred - GBuffer Generation");  
+
 		// Our foliage shader which manipulates the vertices of the mesh
 		ShaderProgram::Sptr foliageShader = ResourceManager::CreateAsset<ShaderProgram>(std::unordered_map<ShaderPartType, std::string>{
 			{ ShaderPartType::Vertex, "shaders/vertex_shaders/foliage.glsl" },
@@ -173,21 +181,6 @@ void DefaultSceneLayer::_CreateScene()
 		});
 		celShader->SetDebugName("Cel Shader");
 
-	
-		
-
-		// Load in the meshes
-		MeshResource::Sptr monkeyMesh = ResourceManager::CreateAsset<MeshResource>("Monkey.obj");
-		MeshResource::Sptr shipMesh   = ResourceManager::CreateAsset<MeshResource>("fenrir.obj");
-
-		// Load in some textures
-		Texture2D::Sptr    boxTexture   = ResourceManager::CreateAsset<Texture2D>("textures/box-diffuse.png");
-		Texture2D::Sptr    boxSpec      = ResourceManager::CreateAsset<Texture2D>("textures/box-specular.png");
-		Texture2D::Sptr    monkeyTex    = ResourceManager::CreateAsset<Texture2D>("textures/monkey-uvMap.png");
-		Texture2D::Sptr    leafTex      = ResourceManager::CreateAsset<Texture2D>("textures/leaves.png");
-		leafTex->SetMinFilter(MinFilter::Nearest);
-		leafTex->SetMagFilter(MagFilter::Nearest);
-		
 		// Load in some textures
 		MeshResource::Sptr spiderMesh = ResourceManager::CreateAsset<MeshResource>("SpiderMesh.obj");
 		MeshResource::Sptr chestMesh = ResourceManager::CreateAsset<MeshResource>("Chest.obj"); //1
@@ -249,6 +242,7 @@ void DefaultSceneLayer::_CreateScene()
 		Texture2D::Sptr    BarrelTexture = ResourceManager::CreateAsset<Texture2D>("textures/BarrelTex.png");
 
 		Texture2D::Sptr    pausePNG = ResourceManager::CreateAsset<Texture2D>("textures/UIPause2.png");
+		Texture2D::Sptr    helpPNG = ResourceManager::CreateAsset<Texture2D>("textures/HelpScreen.png");
 		Texture2D::Sptr    menuPNG = ResourceManager::CreateAsset<Texture2D>("textures/UIMenu2.png");
 		Texture2D::Sptr    losePNG = ResourceManager::CreateAsset<Texture2D>("textures/UILose2.png");
 		Texture2D::Sptr    winPNG = ResourceManager::CreateAsset<Texture2D>("textures/UIWin2.png");
@@ -305,7 +299,7 @@ void DefaultSceneLayer::_CreateScene()
 		// Since the skybox I used was for Y-up, we need to rotate it 90 deg around the X-axis to convert it to z-up 
 		scene->SetSkyboxRotation(glm::rotate(MAT4_IDENTITY, glm::half_pi<float>(), glm::vec3(1.0f, 0.0f, 0.0f)));
 
-		Material::Sptr golemMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
+		Material::Sptr golemMaterial = ResourceManager::CreateAsset<Material>(golemShader);
 		{
 			Texture2D::Sptr normalMap = ResourceManager::CreateAsset<Texture2D>("textures/DefMap.png");
 			golemMaterial->Name = "golemMaterial";
@@ -943,7 +937,7 @@ void DefaultSceneLayer::_CreateScene()
 			renderer->SetMaterial(bonesMaterial);
 			deccor->AddChild(ribcage4);
 		}
-		{//walls start///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		/* {//walls start///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			GameObject::Sptr wall = scene->CreateGameObject("Walls");
 
 			GameObject::Sptr wall1 = scene->CreateGameObject("wall 1");
@@ -1552,6 +1546,7 @@ void DefaultSceneLayer::_CreateScene()
 				pillar->AddChild(pillar20);
 			}
 		} // pillar end
+		*/
 
 		GameObject::Sptr enemies = scene->CreateGameObject("Enemies");
 		GameObject::Sptr spider1 = scene->CreateGameObject("Spider");
@@ -1818,6 +1813,23 @@ void DefaultSceneLayer::_CreateScene()
 		/////////////////////////// UI //////////////////////////////
 
 		GameObject::Sptr UI = scene->CreateGameObject("UI Components");
+		GameObject::Sptr helpScreen = scene->CreateGameObject("Help Screen");
+		{
+			RectTransform::Sptr transform = helpScreen->Add<RectTransform>();
+			transform->SetMin({ 1920, 1080 });
+			transform->SetMax({ 0, 0 });
+			transform->SetPosition(glm::vec2(960, 540));
+
+			GuiPanel::Sptr testPanel = helpScreen->Add<GuiPanel>();
+			//testPanel->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+			testPanel->SetTexture(helpPNG);
+			testPanel->SetBorderRadius(1920); //Tinker with 
+			testPanel->IsEnabled = false;
+
+			helpScreen->Add<HelpScreen>();
+			helpScreen->Get<HelpScreen>()->testPanel = testPanel; UI->AddChild(helpScreen);
+		}
+
 		GameObject::Sptr MenScreen = scene->CreateGameObject("Menu Screen");
 		{
 			RectTransform::Sptr transform = MenScreen->Add<RectTransform>();
@@ -1849,7 +1861,6 @@ void DefaultSceneLayer::_CreateScene()
 			pausScreen->Add<PauseScreen>();
 			pausScreen->Get<PauseScreen>()->testPanel = testPanel; UI->AddChild(pausScreen);
 		}
-
 		GameObject::Sptr WinnerScreen = scene->CreateGameObject("Winner Screen");
 		{
 			RectTransform::Sptr transform = WinnerScreen->Add<RectTransform>();

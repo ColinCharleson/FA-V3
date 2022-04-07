@@ -15,12 +15,7 @@
 #include "Gameplay/Physics/EnemyPath.h"
 #include "NOU/Mesh.h"
 #include "NOU/CCamera.h"
-
-
-
-
-
-
+#include "Gameplay/Material.h"
 void EnemyPath::RenderImGui()
 {
 	LABEL_LEFT(ImGui::DragFloat, "Impulse", &_impulse, 1.0f);
@@ -39,7 +34,6 @@ EnemyPath::EnemyPath() :
 {
 }
 
-
 EnemyPath::Sptr EnemyPath::FromJson(const nlohmann::json& blob)
 {
 	EnemyPath::Sptr result = std::make_shared<EnemyPath>();
@@ -52,16 +46,10 @@ extern int ammoCount, playerHealth, bandageCount;
 
 EnemyPath::~EnemyPath() = default;
 
-
-
 template<typename T>
 T Lerp(const T & a, const T & b, float t)
 {
-
-
 	return (1.0f - t) * a + t * b;
-
-
 }
 extern float boltX, boltY, boltZ;
 extern bool arrowOut;
@@ -74,27 +62,39 @@ extern bool gamePaused;
 int golemHealth1 = 3;
 float dmgTime3 = 0;
 
-bool isAlive = true;
+bool isAlive = true; 
+
+
 void EnemyPath::Update(float deltaTime)
 {
-	Gameplay::IComponent::Sptr enemy = golem1.lock();
+	RenderComponent::Sptr _renderer = GetGameObject()->Get<RenderComponent>();
+
 	if (gamePaused == false)
 	{
-		if ((sqrt(pow(GetGameObject()->GetPosition().x - boltX, 2) + pow(GetGameObject()->GetPosition().y - boltY, 2) + pow(GetGameObject()->GetPosition().z - boltZ, 2) * 2)) <= 1.0f)
+		if ((sqrt(pow(GetGameObject()->GetPosition().x - boltX, 2) + pow(GetGameObject()->GetPosition().y - boltY, 2) + pow(GetGameObject()->GetPosition().z - boltZ, 2) * 2)) <= 1.5f)
 		{
 			if (arrowOut == true)
 			{
-				golemHealth1 -= 1;
 				if (dmgTime3 <= 0)
 				{
 					golemHealth1 -= 1;
-					std::cout << golemHealth1;
-					dmgTime3 = 2;
 
+					if (golemHealth1 == 1)
+					{
+						Texture2D::Sptr oneHealth = ResourceManager::CreateAsset<Texture2D>("textures/GolemTex1hp.png");
+						_renderer->GetMaterial()->Set("u_Material.AlbedoMap", oneHealth);
+					}
+					if (golemHealth1 == 2)
+					{
+						Texture2D::Sptr twoHealth = ResourceManager::CreateAsset<Texture2D>("textures/GolemTex2hp.png");
+						_renderer->GetMaterial()->Set("u_Material.AlbedoMap", twoHealth);
+					}
 					if (golemHealth1 == 0)
 					{
 						GetGameObject()->GetScene()->RemoveGameObject(GetGameObject()->SelfRef());
 					}
+
+					dmgTime3 = 2;
 				}
 			}
 		}

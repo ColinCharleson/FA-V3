@@ -171,6 +171,9 @@
     <ClInclude Include="src\Gameplay\Components\HealthBar2HP.h">
       <Filter>Gameplay\Components</Filter>
     </ClInclude>
+    <ClInclude Include="src\Gameplay\Components\HelpScreenBehaviour.h">
+      <Filter>Gameplay\Components</Filter>
+    </ClInclude>
     <ClInclude Include="src\Gameplay\Components\IComponent.h">
       <Filter>Gameplay\Components</Filter>
     </ClInclude>
@@ -525,6 +528,9 @@
       <Filter>Gameplay\Components</Filter>
     </ClCompile>
     <ClCompile Include="src\Gameplay\Components\HealthBar2HP.cpp">
+      <Filter>Gameplay\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Gameplay\Components\HelpScreenBehaviour.cpp">
       <Filter>Gameplay\Components</Filter>
     </ClCompile>
     <ClCompile Include="src\Gameplay\Components\IComponent.cpp">

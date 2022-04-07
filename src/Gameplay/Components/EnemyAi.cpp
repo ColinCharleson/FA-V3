@@ -56,7 +56,8 @@ EnemyBehaviour::~EnemyBehaviour() = default;
 float deathTime = 0;
 
 void EnemyBehaviour::Update(float deltaTime) 
-{ 
+{
+	RenderComponent::Sptr _renderer = GetGameObject()->Get<RenderComponent>();
 	if (gamePaused == false)
 	{
 		if ((sqrt(pow(GetGameObject()->GetPosition().x - boltX, 2) + pow(GetGameObject()->GetPosition().y - boltY, 2) + pow(GetGameObject()->GetPosition().z - boltZ, 2) * 2)) <= 1.0f)
@@ -65,7 +66,12 @@ void EnemyBehaviour::Update(float deltaTime)
 			{
 				if (dmgTime <= 0)
 				{
-					skeletonHealth -= 1;
+					skeletonHealth -= 1; 
+					if (skeletonHealth == 1)
+					{
+						Texture2D::Sptr oneHealth = ResourceManager::CreateAsset<Texture2D>("textures/SkeletonTex_Skeleton_1Health_1000100010_FXIX.png");
+						_renderer->GetMaterial()->Set("u_Material.AlbedoMap", oneHealth);
+					}
 					cout << skeletonHealth;
 					dmgTime = 2;
 

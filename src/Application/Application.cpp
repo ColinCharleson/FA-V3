@@ -53,6 +53,7 @@
 #include <Gameplay\Components\DoorBehaviour.h>
 #include <Gameplay\Components\SlimeBehaviour.h>
 #include <Gameplay\Components\PauseScreenBehaviour.h>
+#include <Gameplay\Components\HelpScreenBehaviour.h>
 #include <Gameplay\Components\MenuScreenBehaviour.h>
 #include <Gameplay\Components\HealthBar.h>
 #include <Gameplay\Components\HealthBar2HP.h>
@@ -301,6 +302,7 @@ void Application::_Run()
 			pausePressed = false;
 		}
 
+
 		if (startPlaying == true)
 		{
 			glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -411,6 +413,7 @@ void Application::_RegisterClasses()
 	ComponentManager::RegisterType<SlimeBehaviour>();
 	ComponentManager::RegisterType<DoorBehaviour>();
 	ComponentManager::RegisterType<PauseScreen>();
+	ComponentManager::RegisterType<HelpScreen>();
 	ComponentManager::RegisterType<MenuScreen>();
 	ComponentManager::RegisterType<WinScreen>();
 	ComponentManager::RegisterType<LoseScreen>();

@@ -150,6 +150,7 @@
     <ClInclude Include="src\Gameplay\Components\HealthBar.h" />
     <ClInclude Include="src\Gameplay\Components\HealthBar1HP.h" />
     <ClInclude Include="src\Gameplay\Components\HealthBar2HP.h" />
+    <ClInclude Include="src\Gameplay\Components\HelpScreenBehaviour.h" />
     <ClInclude Include="src\Gameplay\Components\IComponent.h" />
     <ClInclude Include="src\Gameplay\Components\ItemAmmoBehaviour.h" />
     <ClInclude Include="src\Gameplay\Components\ItemBandageBehaviour.h" />
@@ -270,6 +271,7 @@
     <ClCompile Include="src\Gameplay\Components\HealthBar.cpp" />
     <ClCompile Include="src\Gameplay\Components\HealthBar1HP.cpp" />
     <ClCompile Include="src\Gameplay\Components\HealthBar2HP.cpp" />
+    <ClCompile Include="src\Gameplay\Components\HelpScreenBehaviour.cpp" />
     <ClCompile Include="src\Gameplay\Components\IComponent.cpp" />
     <ClCompile Include="src\Gameplay\Components\ItemAmmoBehaviour.cpp" />
     <ClCompile Include="src\Gameplay\Components\ItemBandageBehaviour.cpp" />
