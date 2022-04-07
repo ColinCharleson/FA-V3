@@ -1803,6 +1803,7 @@ void DefaultSceneLayer::_CreateScene()
 			pausScreen->Get<PauseScreen>()->testPanel = testPanel; UI->AddChild(pausScreen);
 		}
 
+
 		GameObject::Sptr WinnerScreen = scene->CreateGameObject("Winner Screen");
 		{
 			RectTransform::Sptr transform = WinnerScreen->Add<RectTransform>();
@@ -1846,54 +1847,49 @@ void DefaultSceneLayer::_CreateScene()
 
 			transform->SetPosition(glm::vec2(220, 920));
 			transform->SetSize(glm::vec2(140, 50));
-
-			GuiPanel::Sptr testPanel = BandagePack->Add<GuiPanel>();
-
-			testPanel->SetTexture(Bandage);
-			testPanel->SetBorderRadius(0); //Tinker with
-			testPanel->IsEnabled = false;
-
-
 			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
 			font->Bake();
-
 			GuiText::Sptr text = BandagePack->Add<GuiText>();
 			text->SetText(std::to_string(bandageCount));
 			text->SetFont(font);
 			text->SetColor(glm::vec4(0, 1, 0, 0));
 
 
+			GuiPanel::Sptr testPanel = BandagePack->Add<GuiPanel>();
+			testPanel->SetTexture(Bandage);
+			testPanel->SetBorderRadius(0); //Tinker with
+			testPanel->IsEnabled = false;
+
 
 			BandagePack->Add<BandageCount>()->BandagePack = testPanel;
 			UI->AddChild(BandagePack);
 		}
+
 
 		GameObject::Sptr AmmoPack = scene->CreateGameObject("Ammo UI");
 		{
 
 			AmmoPack->RenderGUI();
 			//glEnable(GL_BLEND);
-			RectTransform::Sptr transform = AmmoPack->Add<RectTransform>();
+			RectTransform::Sptr transform1 = AmmoPack->Add<RectTransform>();
 
-			transform->SetPosition(glm::vec2(1700, 920));
-			transform->SetSize(glm::vec2(99, 50));
+			transform1->SetPosition(glm::vec2(1700, 920));
+			transform1->SetSize(glm::vec2(99, 50));
+			Font::Sptr font1 = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
+			font1->Bake();
+			GuiText::Sptr text1 = AmmoPack->Add<GuiText>();
+			text1->SetText(std::to_string(ammoCount));
+			text1->SetFont(font1);
+			text1->SetColor(glm::vec4(0, 1, 0, 0));
 
-			GuiPanel::Sptr testPanel = AmmoPack->Add<GuiPanel>();
 
-			testPanel->SetTexture(ammoHUD);
-			testPanel->SetBorderRadius(10); //Tinker with
-			testPanel->IsEnabled = false;
+			GuiPanel::Sptr testPanel1 = AmmoPack->Add<GuiPanel>();
+			testPanel1->SetTexture(ammoHUD);
+			testPanel1->SetBorderRadius(10); //Tinker with
+			testPanel1->IsEnabled = false;
 
-			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
-			font->Bake();
 
-			GuiText::Sptr text = AmmoPack->Add<GuiText>();
-			text->SetText(std::to_string(ammoCount));
-			text->SetFont(font);
-
-			text->SetColor(glm::vec4(0, 1, 0, 0));
-
-			AmmoPack->Add<NormalAmmo>()->AmmoPack = testPanel;
+			AmmoPack->Add<NormalAmmo>()->AmmoPack = testPanel1;
 			UI->AddChild(AmmoPack);
 		}
 
