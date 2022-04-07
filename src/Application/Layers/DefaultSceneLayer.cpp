@@ -75,6 +75,8 @@
 #include "Gameplay/Physics/EnemyPath.h"
 #include "Gameplay/Physics/EnemyPathCatMull.h"
 #include "Gameplay/Physics/EnemyPathBezeir.h"
+#include <Gameplay\Components\BandageUI.h>
+#include "Gameplay/Components/NormalAmmoUI.h"
 
 // Physics
 #include "Gameplay/Physics/RigidBody.h"
@@ -1894,50 +1896,68 @@ void DefaultSceneLayer::_CreateScene()
 
 			transform->SetPosition(glm::vec2(220, 920));
 			transform->SetSize(glm::vec2(140, 50));
-			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
-			font->Bake();
-			GuiText::Sptr text = BandagePack->Add<GuiText>();
-			text->SetText(std::to_string(bandageCount));
-			text->SetFont(font);
-			text->SetColor(glm::vec4(0, 1, 0, 0));
-
-
 			GuiPanel::Sptr testPanel = BandagePack->Add<GuiPanel>();
 			testPanel->SetTexture(Bandage);
 			testPanel->SetBorderRadius(0); //Tinker with
 			testPanel->IsEnabled = false;
 
 
-			BandagePack->Add<BandageCount>()->BandagePack = testPanel;
+			BandagePack->Add<BandageUI>()->Bandageui= testPanel;
 			UI->AddChild(BandagePack);
 		}
+
+		GameObject::Sptr BandageText = scene->CreateGameObject("Bandage txt");
+		{
+			RectTransform::Sptr transform = BandageText->Add<RectTransform>();
+			transform->SetPosition(glm::vec3(223, 1010, 12));
+			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
+			font->Bake();
+			GuiText::Sptr text = BandageText->Add<GuiText>();
+			text->SetText(std::to_string(bandageCount));
+			text->SetFont(font);
+			text->SetColor(glm::vec4(1, 0, 0, 1));
+			text->IsEnabled = false;
+		  
+
+			BandageText->Add<BandageCount>()->BandagePack = text;
+			UI->AddChild(BandageText);
+		}
+
 
 
 		GameObject::Sptr AmmoPack = scene->CreateGameObject("Ammo UI");
 		{
 
 			AmmoPack->RenderGUI();
-			//glEnable(GL_BLEND);
 			RectTransform::Sptr transform1 = AmmoPack->Add<RectTransform>();
-
 			transform1->SetPosition(glm::vec2(1700, 920));
 			transform1->SetSize(glm::vec2(99, 50));
-			Font::Sptr font1 = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
-			font1->Bake();
-			GuiText::Sptr text1 = AmmoPack->Add<GuiText>();
-			text1->SetText(std::to_string(ammoCount));
-			text1->SetFont(font1);
-			text1->SetColor(glm::vec4(0, 1, 0, 0));
-
-
 			GuiPanel::Sptr testPanel1 = AmmoPack->Add<GuiPanel>();
 			testPanel1->SetTexture(ammoHUD);
 			testPanel1->SetBorderRadius(10); //Tinker with
 			testPanel1->IsEnabled = false;
-
-
-			AmmoPack->Add<NormalAmmo>()->AmmoPack = testPanel1;
+			AmmoPack->Add<NormalAmmoUI>()->AmmoPackUI = testPanel1;
 			UI->AddChild(AmmoPack);
+		}
+
+		GameObject::Sptr AmmoText = scene->CreateGameObject("Ammo txt");
+		{
+
+		
+
+			RectTransform::Sptr transform = AmmoText->Add<RectTransform>();
+			transform->SetPosition(glm::vec3(1700, 1010, 12));
+			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
+			font->Bake();
+			GuiText::Sptr text = AmmoText->Add<GuiText>();
+			text->SetText(std::to_string(ammoCount));
+			text->SetFont(font);
+			text->SetColor(glm::vec4(1, 0, 0, 1));
+			text->IsEnabled = false;
+
+
+			AmmoText->Add<NormalAmmo>()->AmmoPack = text;
+			UI->AddChild(AmmoText);
 		}
 
 

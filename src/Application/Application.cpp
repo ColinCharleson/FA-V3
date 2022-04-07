@@ -60,7 +60,9 @@
 #include <Gameplay\Components\WinScreenBehaviour.h>
 #include <Gameplay\Components\LoseScreenBehaviour.h>
 #include <Gameplay\Components\NormalAmmoCount.h>
+#include "Gameplay/Components/NormalAmmoUI.h"
 #include <Gameplay\Components\BandageCount.h>
+#include <Gameplay\Components\BandageUI.h>
 #include <Gameplay\Components\SpikeBehaviour.h>
 #include <Gameplay\Components\Bolt.h>
 #include <Gameplay\Components\AimPoint.h>
@@ -420,7 +422,9 @@ void Application::_RegisterClasses()
 	ComponentManager::RegisterType<HealthBehaviour2>();
 	ComponentManager::RegisterType<HealthBehaviour1>();
 	ComponentManager::RegisterType<NormalAmmo>();
+	ComponentManager::RegisterType<NormalAmmoUI>();
 	ComponentManager::RegisterType<BandageCount>();
+	ComponentManager::RegisterType<BandageUI>();
 }
 
 void Application::_Load() {
