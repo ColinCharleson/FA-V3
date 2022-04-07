@@ -1890,10 +1890,9 @@ void DefaultSceneLayer::_CreateScene()
 
 		GameObject::Sptr BandagePack = scene->CreateGameObject("Bandage UI");
 		{
-
+			glEnable(GL_BLEND);
 			BandagePack->RenderGUI();
 			RectTransform::Sptr transform = BandagePack->Add<RectTransform>();
-
 			transform->SetPosition(glm::vec2(220, 920));
 			transform->SetSize(glm::vec2(140, 50));
 			GuiPanel::Sptr testPanel = BandagePack->Add<GuiPanel>();
@@ -1908,14 +1907,15 @@ void DefaultSceneLayer::_CreateScene()
 
 		GameObject::Sptr BandageText = scene->CreateGameObject("Bandage txt");
 		{
+			glEnable(GL_BLEND);
 			RectTransform::Sptr transform = BandageText->Add<RectTransform>();
-			transform->SetPosition(glm::vec3(223, 1010, 12));
+			transform->SetPosition(glm::vec3(223, 975, 12));
 			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
 			font->Bake();
 			GuiText::Sptr text = BandageText->Add<GuiText>();
 			text->SetText(std::to_string(bandageCount));
 			text->SetFont(font);
-			text->SetColor(glm::vec4(1, 0, 0, 1));
+			text->SetColor(glm::vec4(1, 1, 0, 1));
 			text->IsEnabled = false;
 		  
 
@@ -1927,7 +1927,7 @@ void DefaultSceneLayer::_CreateScene()
 
 		GameObject::Sptr AmmoPack = scene->CreateGameObject("Ammo UI");
 		{
-
+			glEnable(GL_BLEND);
 			AmmoPack->RenderGUI();
 			RectTransform::Sptr transform1 = AmmoPack->Add<RectTransform>();
 			transform1->SetPosition(glm::vec2(1700, 920));
@@ -1943,16 +1943,15 @@ void DefaultSceneLayer::_CreateScene()
 		GameObject::Sptr AmmoText = scene->CreateGameObject("Ammo txt");
 		{
 
-		
-
+			glEnable(GL_BLEND);
 			RectTransform::Sptr transform = AmmoText->Add<RectTransform>();
-			transform->SetPosition(glm::vec3(1700, 1010, 12));
+			transform->SetPosition(glm::vec3(1700, 975, 50));
 			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
 			font->Bake();
 			GuiText::Sptr text = AmmoText->Add<GuiText>();
 			text->SetText(std::to_string(ammoCount));
 			text->SetFont(font);
-			text->SetColor(glm::vec4(1, 0, 0, 1));
+			text->SetColor(glm::vec4(1, 1, 0, 1));
 			text->IsEnabled = false;
 
 
