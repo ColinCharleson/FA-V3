@@ -148,13 +148,6 @@ void DefaultSceneLayer::_CreateScene()
 		});
 		deferredForward->SetDebugName("Deferred - GBuffer Generation");  
 
-		// Basic gbuffer generation with no vertex manipulation
-		ShaderProgram::Sptr golemShader = ResourceManager::CreateAsset<ShaderProgram>(std::unordered_map<ShaderPartType, std::string>{
-			{ ShaderPartType::Vertex, "shaders/vertex_shaders/basic.glsl" },
-			{ ShaderPartType::Fragment, "shaders/fragment_shaders/golemShader.glsl" }
-		});
-		deferredForward->SetDebugName("Deferred - GBuffer Generation");  
-
 		// Our foliage shader which manipulates the vertices of the mesh
 		ShaderProgram::Sptr foliageShader = ResourceManager::CreateAsset<ShaderProgram>(std::unordered_map<ShaderPartType, std::string>{
 			{ ShaderPartType::Vertex, "shaders/vertex_shaders/foliage.glsl" },
@@ -301,7 +294,7 @@ void DefaultSceneLayer::_CreateScene()
 		// Since the skybox I used was for Y-up, we need to rotate it 90 deg around the X-axis to convert it to z-up 
 		scene->SetSkyboxRotation(glm::rotate(MAT4_IDENTITY, glm::half_pi<float>(), glm::vec3(1.0f, 0.0f, 0.0f)));
 
-		Material::Sptr golemMaterial = ResourceManager::CreateAsset<Material>(golemShader);
+		Material::Sptr golemMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
 		{
 			Texture2D::Sptr normalMap = ResourceManager::CreateAsset<Texture2D>("textures/DefMap.png");
 			golemMaterial->Name = "golemMaterial";
