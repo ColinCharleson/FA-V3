@@ -33,7 +33,7 @@ protected:
 		glm::vec3    Position;
 		glm::vec3    Velocity; // For emitters, this is initial velocity
 		glm::vec4    Color;
-		float        Lifetime; // For emitters, this is the time to next particle spawn
+		float        Lifetime = 0.1f; // For emitters, this is the time to next particle spawn
 
 		// For emitters, x is time to next particle, y is max deviation from direction in radians, z-w is lifetime range
 		glm::vec4    Metadata;
