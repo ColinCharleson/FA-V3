@@ -301,7 +301,7 @@ void DefaultSceneLayer::_CreateScene()
 		// Since the skybox I used was for Y-up, we need to rotate it 90 deg around the X-axis to convert it to z-up 
 		scene->SetSkyboxRotation(glm::rotate(MAT4_IDENTITY, glm::half_pi<float>(), glm::vec3(1.0f, 0.0f, 0.0f)));
 
-		Material::Sptr golemMaterial = ResourceManager::CreateAsset<Material>(golemShader);
+		Material::Sptr golemMaterial = ResourceManager::CreateAsset<Material>(deferredForward);
 		{
 			Texture2D::Sptr normalMap = ResourceManager::CreateAsset<Texture2D>("textures/DefMap.png");
 			golemMaterial->Name = "golemMaterial";
@@ -1941,7 +1941,7 @@ void DefaultSceneLayer::_CreateScene()
 		{
 			glEnable(GL_BLEND);
 			RectTransform::Sptr transform = BandageText->Add<RectTransform>();
-			transform->SetPosition(glm::vec3(223, 975, 12));
+			transform->SetPosition(glm::vec3(223, 975, 50));
 			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
 			font->Bake();
 			GuiText::Sptr text = BandageText->Add<GuiText>();
