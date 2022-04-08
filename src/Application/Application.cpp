@@ -277,9 +277,24 @@ void Application::_Run()
 				RoomFunction();
 			}
 			else*/
-			{
+			
 				gameWin = true;
-			}
+				
+				if (gameWin = true)
+				{
+					
+					if (InputEngine::IsKeyDown(GLFW_KEY_SPACE))
+					{
+						LoadScene("Default Scene");
+					
+
+						
+
+					}
+
+				
+				}
+			
 		}
 
 		bool pressed = glfwGetKey(_window, GLFW_KEY_ESCAPE);
