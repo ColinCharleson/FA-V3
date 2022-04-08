@@ -38,45 +38,10 @@ HelpScreen::Sptr HelpScreen::FromJson(const nlohmann::json& blob) {
 extern bool gamePaused, onMenu;
 bool helping = false;
 bool pressed = false;
-
-bool helpingM = false;
-bool pressedM = false;
 void HelpScreen::Update(float deltaTime) {
 	Gameplay::IComponent::Sptr ptr = testPanel.lock();
 	
 	if (onMenu == true)
-	{
-		if (InputEngine::IsKeyDown(GLFW_KEY_H))
-		{
-			if (pressedM == false)
-			{
-				helpingM = !helpingM;
-				pressedM = true;
-			}
-		}
-		if (InputEngine::GetKeyState(GLFW_KEY_H) == ButtonState::Up)
-		{
-			pressedM = false;
-		}
-		if (helpingM == false)
-		{
-			ptr->IsEnabled = false;
-		}
-		else
-		{
-			ptr->IsEnabled = true;
-		}
-	}
-	else
-	{
-		if (gamePaused == false)
-		{
-			ptr->IsEnabled = false;
-			helpingM = false;
-		}
-	}
-
-	if (gamePaused == true)
 	{
 		if (InputEngine::IsKeyDown(GLFW_KEY_H))
 		{
@@ -101,11 +66,12 @@ void HelpScreen::Update(float deltaTime) {
 	}
 	else
 	{
-		if (onMenu == false)
+		if (gamePaused == false)
 		{
-		ptr->IsEnabled = false;
-		helping = false;
+			ptr->IsEnabled = false;
+			helping = false;
 		}
 	}
+
 }
 

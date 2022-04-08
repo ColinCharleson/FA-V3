@@ -148,13 +148,6 @@ void DefaultSceneLayer::_CreateScene()
 		});
 		deferredForward->SetDebugName("Deferred - GBuffer Generation");  
 
-		// Basic gbuffer generation with no vertex manipulation
-		ShaderProgram::Sptr golemShader = ResourceManager::CreateAsset<ShaderProgram>(std::unordered_map<ShaderPartType, std::string>{
-			{ ShaderPartType::Vertex, "shaders/vertex_shaders/basic.glsl" },
-			{ ShaderPartType::Fragment, "shaders/fragment_shaders/golemShader.glsl" }
-		});
-		deferredForward->SetDebugName("Deferred - GBuffer Generation");  
-
 		// Our foliage shader which manipulates the vertices of the mesh
 		ShaderProgram::Sptr foliageShader = ResourceManager::CreateAsset<ShaderProgram>(std::unordered_map<ShaderPartType, std::string>{
 			{ ShaderPartType::Vertex, "shaders/vertex_shaders/foliage.glsl" },
