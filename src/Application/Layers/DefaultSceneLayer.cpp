@@ -1934,7 +1934,7 @@ void DefaultSceneLayer::_CreateScene()
 		{
 			glEnable(GL_BLEND);
 			RectTransform::Sptr transform = BandageText->Add<RectTransform>();
-			transform->SetPosition(glm::vec3(223, 975, 12));
+			transform->SetPosition(glm::vec3(223, 975, 50));
 			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
 			font->Bake();
 			GuiText::Sptr text = BandageText->Add<GuiText>();
