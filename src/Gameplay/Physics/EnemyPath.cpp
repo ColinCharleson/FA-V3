@@ -57,7 +57,7 @@ extern int golemHealth , spiderHealth , skeletonHealth ;
 
 extern float deathTime ;
 extern bool canShoot;
-
+extern bool gameWin;
 extern bool gamePaused;
 int golemHealth1 = 3;
 float dmgTime3 = 0;
@@ -68,131 +68,133 @@ bool isAlive = true;
 void EnemyPath::Update(float deltaTime)
 {
 	RenderComponent::Sptr _renderer = GetGameObject()->Get<RenderComponent>();
-
-	if (gamePaused == false)
+	if (gameWin == false)
 	{
-		if ((sqrt(pow(GetGameObject()->GetPosition().x - boltX, 2) + pow(GetGameObject()->GetPosition().y - boltY, 2) + pow(GetGameObject()->GetPosition().z - boltZ, 2) * 2)) <= 1.5f)
+		if (gamePaused == false)
 		{
-			if (arrowOut == true)
+			if ((sqrt(pow(GetGameObject()->GetPosition().x - boltX, 2) + pow(GetGameObject()->GetPosition().y - boltY, 2) + pow(GetGameObject()->GetPosition().z - boltZ, 2) * 2)) <= 1.5f)
 			{
-				if (dmgTime3 <= 0)
+				if (arrowOut == true)
 				{
-					golemHealth1 -= 1;
+					if (dmgTime3 <= 0)
+					{
+						golemHealth1 -= 1;
 
-					if (golemHealth1 == 1)
-					{
-						Texture2D::Sptr oneHealth = ResourceManager::CreateAsset<Texture2D>("textures/GolemTex1hp.png");
-						_renderer->GetMaterial()->Set("u_Material.AlbedoMap", oneHealth);
-					}
-					if (golemHealth1 == 2)
-					{
-						Texture2D::Sptr twoHealth = ResourceManager::CreateAsset<Texture2D>("textures/GolemTex2hp.png");
-						_renderer->GetMaterial()->Set("u_Material.AlbedoMap", twoHealth);
-					}
-					if (golemHealth1 == 0)
-					{
-						GetGameObject()->GetScene()->RemoveGameObject(GetGameObject()->SelfRef());
-					}
+						if (golemHealth1 == 1)
+						{
+							Texture2D::Sptr oneHealth = ResourceManager::CreateAsset<Texture2D>("textures/GolemTex1hp.png");
+							_renderer->GetMaterial()->Set("u_Material.AlbedoMap", oneHealth);
+						}
+						if (golemHealth1 == 2)
+						{
+							Texture2D::Sptr twoHealth = ResourceManager::CreateAsset<Texture2D>("textures/GolemTex2hp.png");
+							_renderer->GetMaterial()->Set("u_Material.AlbedoMap", twoHealth);
+						}
+						if (golemHealth1 == 0)
+						{
+							GetGameObject()->GetScene()->RemoveGameObject(GetGameObject()->SelfRef());
+						}
 
-					dmgTime3 = 2;
+						dmgTime3 = 2;
+					}
 				}
 			}
-		}
-		if (dmgTime3 >= 0)
-		{
-			dmgTime3 -= 1 * deltaTime;
-		}
-
-		if (isAlive == true)
-		{
-			if ((sqrt(pow(GetGameObject()->GetPosition().x - playerX, 2) + pow(GetGameObject()->GetPosition().y - playerY, 2) * 2)) <= 4)
+			if (dmgTime3 >= 0)
 			{
-				if (GetGameObject()->GetPosition().x > playerX)
+				dmgTime3 -= 1 * deltaTime;
+			}
+
+			if (isAlive == true)
+			{
+				if ((sqrt(pow(GetGameObject()->GetPosition().x - playerX, 2) + pow(GetGameObject()->GetPosition().y - playerY, 2) * 2)) <= 4)
 				{
-					GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x - 0.01, GetGameObject()->GetPosition().y, GetGameObject()->GetPosition().z));
+					if (GetGameObject()->GetPosition().x > playerX)
+					{
+						GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x - 0.01, GetGameObject()->GetPosition().y, GetGameObject()->GetPosition().z));
+					}
+
+					if (GetGameObject()->GetPosition().y > playerY)
+					{
+						GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x, GetGameObject()->GetPosition().y - 0.01, GetGameObject()->GetPosition().z));
+					}
+
+					if (GetGameObject()->GetPosition().x < playerX)
+					{
+						GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x + 0.01, GetGameObject()->GetPosition().y, GetGameObject()->GetPosition().z));
+					}
+
+					if (GetGameObject()->GetPosition().y < playerY)
+					{
+						GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x, GetGameObject()->GetPosition().y + 0.01, GetGameObject()->GetPosition().z));
+					}
+
+					GetGameObject()->LookAt(glm::vec3(playerX, playerY, 0));
+				}
+				else
+				{
+					std::vector<glm::vec3> _points = { glm::vec3(16.0f, -2.5f, 0.0f), glm::vec3(9.0f, -4.0f, 0.0f), };
+
+					_timer += deltaTime;
+
+					while (_timer >= m_segmentTravelTime)
+					{
+						_timer -= m_segmentTravelTime;
+
+						m_segmentIndex += 1;
+
+						if (m_segmentIndex == _points.size())
+						{
+							m_segmentIndex = 0;
+						}
+					}
+
+					float t = _timer / m_segmentTravelTime;
+
+					glm::vec3 a = _points[((m_segmentIndex - 1) + _points.size()) % _points.size()];
+					glm::vec3 b = _points[((m_segmentIndex)+_points.size()) % _points.size()];
+
+					GetGameObject()->SetPostion(Lerp(a, b, t));
+					GetGameObject()->LookAt(glm::vec3(b.x, b.y, 0));
+				}
+				if ((sqrt(pow(GetGameObject()->GetPosition().x - playerX, 2) + pow(GetGameObject()->GetPosition().y - playerY, 2) * 2)) <= 1.5)
+				{
+
+					if (deathTime <= 0)
+					{
+						playerHealth -= 1;
+						deathTime = 2;
+						std::cout << "Player health: " << playerHealth << std::endl;
+						canShoot = false;
+
+						if (playerHealth > 0)
+						{
+							playerHealth -= 1;
+							std::cout << "Player health: " << playerHealth << std::endl;
+
+						}
+					}
+
+				}
+				if (deathTime <= 0)
+				{
+					canShoot = true;
+				}
+				if (deathTime > 0)
+				{
+					deathTime -= 1 * deltaTime;
 				}
 
-				if (GetGameObject()->GetPosition().y > playerY)
-				{
-					GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x, GetGameObject()->GetPosition().y - 0.01, GetGameObject()->GetPosition().z));
-				}
 
-				if (GetGameObject()->GetPosition().x < playerX)
-				{
-					GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x + 0.01, GetGameObject()->GetPosition().y, GetGameObject()->GetPosition().z));
-				}
-
-				if (GetGameObject()->GetPosition().y < playerY)
-				{
-					GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x, GetGameObject()->GetPosition().y + 0.01, GetGameObject()->GetPosition().z));
-				}
-
-				GetGameObject()->LookAt(glm::vec3(playerX, playerY, 0));
 			}
 			else
 			{
-				std::vector<glm::vec3> _points = { glm::vec3(16.0f, -2.5f, 0.0f), glm::vec3(9.0f, -4.0f, 0.0f), };
+				GetGameObject()->GetScene()->RemoveGameObject(GetGameObject()->SelfRef());
 
-				_timer += deltaTime;
 
-				while (_timer >= m_segmentTravelTime)
-				{
-					_timer -= m_segmentTravelTime;
 
-					m_segmentIndex += 1;
 
-					if (m_segmentIndex == _points.size())
-					{
-						m_segmentIndex = 0;
-					}
-				}
-
-				float t = _timer / m_segmentTravelTime;
-
-				glm::vec3 a = _points[((m_segmentIndex - 1) + _points.size()) % _points.size()];
-				glm::vec3 b = _points[((m_segmentIndex)+_points.size()) % _points.size()];
-
-				GetGameObject()->SetPostion(Lerp(a, b, t));
-				GetGameObject()->LookAt(glm::vec3(b.x, b.y, 0));
-			}
-			if ((sqrt(pow(GetGameObject()->GetPosition().x - playerX, 2) + pow(GetGameObject()->GetPosition().y - playerY, 2) * 2)) <= 1.5)
-			{
-
-				if (deathTime <= 0)
-				{
-					playerHealth -= 1;
-					deathTime = 2;
-					std::cout << "Player health: " << playerHealth << std::endl;
-					canShoot = false;
-
-					if (playerHealth > 0)
-					{
-						playerHealth -= 1;
-						std::cout << "Player health: " << playerHealth << std::endl;
-
-					}
-				}
 
 			}
-			if (deathTime <= 0)
-			{
-				canShoot = true;
-			}
-			if (deathTime > 0)
-			{
-				deathTime -= 1 * deltaTime;
-			}
-
-
-		}
-		else
-		{
-			GetGameObject()->GetScene()->RemoveGameObject(GetGameObject()->SelfRef());
-
-
-
-
-
 		}
 	}
 }

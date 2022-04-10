@@ -42,7 +42,7 @@ EnemyBehaviour::Sptr EnemyBehaviour::FromJson(const nlohmann::json& blob) {
 
 extern float playerX, playerY;
 extern int ammoCount, playerHealth, bandageCount;
-
+extern bool gameWin;
 extern float boltX, boltY, boltZ;
 extern bool arrowOut;
 extern bool canShoot;
@@ -58,91 +58,94 @@ float deathTime = 0;
 void EnemyBehaviour::Update(float deltaTime) 
 {
 	RenderComponent::Sptr _renderer = GetGameObject()->Get<RenderComponent>();
-	if (gamePaused == false)
+	if (gameWin == false)
 	{
-		if ((sqrt(pow(GetGameObject()->GetPosition().x - boltX, 2) + pow(GetGameObject()->GetPosition().y - boltY, 2) + pow(GetGameObject()->GetPosition().z - boltZ, 2) * 2)) <= 1.0f)
+		if (gamePaused == false)
 		{
-			if (arrowOut == true)
+			if ((sqrt(pow(GetGameObject()->GetPosition().x - boltX, 2) + pow(GetGameObject()->GetPosition().y - boltY, 2) + pow(GetGameObject()->GetPosition().z - boltZ, 2) * 2)) <= 1.0f)
 			{
-				if (dmgTime <= 0)
+				if (arrowOut == true)
 				{
-					skeletonHealth -= 1; 
-					if (skeletonHealth == 1)
+					if (dmgTime <= 0)
 					{
-						Texture2D::Sptr oneHealth = ResourceManager::CreateAsset<Texture2D>("textures/SkeletonTex_Skeleton_1Health_1000100010_FXIX.png");
-						_renderer->GetMaterial()->Set("u_Material.AlbedoMap", oneHealth);
+						skeletonHealth -= 1;
+						if (skeletonHealth == 1)
+						{
+							Texture2D::Sptr oneHealth = ResourceManager::CreateAsset<Texture2D>("textures/SkeletonTex_Skeleton_1Health_1000100010_FXIX.png");
+							_renderer->GetMaterial()->Set("u_Material.AlbedoMap", oneHealth);
+						}
+						cout << skeletonHealth;
+						dmgTime = 2;
+
+						if (skeletonHealth == 0)
+						{
+							GetGameObject()->GetScene()->RemoveGameObject(GetGameObject()->SelfRef());
+						}
 					}
-					cout << skeletonHealth;
-					dmgTime = 2;
-
-					if (skeletonHealth == 0)
-					{
-						GetGameObject()->GetScene()->RemoveGameObject(GetGameObject()->SelfRef());
-					}
-				}
-			} 
-		}
-
-
-		if (dmgTime >= 0)
-		{
-			dmgTime -= 1 * deltaTime;
-		}
-
-		if ((sqrt(pow(GetGameObject()->GetPosition().x - playerX, 2) + pow(GetGameObject()->GetPosition().y - playerY, 2) * 2)) <= 4)
-		{
-			
-
-    	if (GetGameObject()->GetPosition().x > playerX)
-			{
-				GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x - 0.02, GetGameObject()->GetPosition().y, GetGameObject()->GetPosition().z));
-			}
-
-			if (GetGameObject()->GetPosition().y > playerY)
-			{
-				GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x, GetGameObject()->GetPosition().y - 0.02, GetGameObject()->GetPosition().z));
-			}
-
-			if (GetGameObject()->GetPosition().x < playerX)
-			{
-				GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x + 0.02, GetGameObject()->GetPosition().y, GetGameObject()->GetPosition().z));
-			}
-
-			if (GetGameObject()->GetPosition().y < playerY)
-			{
-				GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x, GetGameObject()->GetPosition().y + 0.02, GetGameObject()->GetPosition().z));
-			}
-
-			GetGameObject()->LookAt(glm::vec3(playerX, playerY, 0));
-
-
-
-		}
-
-		if ((sqrt(pow(GetGameObject()->GetPosition().x - playerX, 2) + pow(GetGameObject()->GetPosition().y - playerY, 2) * 2)) <= 1.5)
-		{
-			if (playerHealth > 0)
-			{
-				if (deathTime <= 0)
-				{
-					playerHealth -= 1;
-					deathTime = 2;
-					std::cout << "Player health: " << playerHealth << std::endl;
-					canShoot = false;
 				}
 			}
 
-		}
+
+			if (dmgTime >= 0)
+			{
+				dmgTime -= 1 * deltaTime;
+			}
+
+			if ((sqrt(pow(GetGameObject()->GetPosition().x - playerX, 2) + pow(GetGameObject()->GetPosition().y - playerY, 2) * 2)) <= 4)
+			{
 
 
-		if (deathTime <= 0)
-		{
+				if (GetGameObject()->GetPosition().x > playerX)
+				{
+					GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x - 0.02, GetGameObject()->GetPosition().y, GetGameObject()->GetPosition().z));
+				}
 
-			canShoot = true;
-		}
-		if (deathTime > 0)
-		{
-			deathTime -= 1 * deltaTime;
+				if (GetGameObject()->GetPosition().y > playerY)
+				{
+					GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x, GetGameObject()->GetPosition().y - 0.02, GetGameObject()->GetPosition().z));
+				}
+
+				if (GetGameObject()->GetPosition().x < playerX)
+				{
+					GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x + 0.02, GetGameObject()->GetPosition().y, GetGameObject()->GetPosition().z));
+				}
+
+				if (GetGameObject()->GetPosition().y < playerY)
+				{
+					GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x, GetGameObject()->GetPosition().y + 0.02, GetGameObject()->GetPosition().z));
+				}
+
+				GetGameObject()->LookAt(glm::vec3(playerX, playerY, 0));
+
+
+
+			}
+
+			if ((sqrt(pow(GetGameObject()->GetPosition().x - playerX, 2) + pow(GetGameObject()->GetPosition().y - playerY, 2) * 2)) <= 1.5)
+			{
+				if (playerHealth > 0)
+				{
+					if (deathTime <= 0)
+					{
+						playerHealth -= 1;
+						deathTime = 2;
+						std::cout << "Player health: " << playerHealth << std::endl;
+						canShoot = false;
+					}
+				}
+
+			}
+
+
+			if (deathTime <= 0)
+			{
+
+				canShoot = true;
+			}
+			if (deathTime > 0)
+			{
+				deathTime -= 1 * deltaTime;
+			}
 		}
 	}
 }
