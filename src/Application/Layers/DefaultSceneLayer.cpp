@@ -112,15 +112,8 @@ DefaultSceneLayer::DefaultSceneLayer() :
 
 DefaultSceneLayer::~DefaultSceneLayer() = default;
 
-float boltX, boltY, boltZ;
-bool arrowOut = false;
-bool canShoot = true;
-bool hasKey = false, slimeSlow = false;
-int ammoCount = 5, playerHealth = 3, bandageCount = 0;
+ 
 
-
-
-int roomType, progressScore;
 glm::quat currentRot;
 glm::vec3 forward;
 
@@ -774,7 +767,7 @@ void DefaultSceneLayer::_CreateScene()
 		GameObject::Sptr door = scene->CreateGameObject("Door");
 		{
 			// Set position in the scene
-			door->SetPostion(glm::vec3(10.0f, -14.8f, 0.0f));
+			door->SetPostion(glm::vec3(0.0f, -5.0f, 0.0f));
 			door->SetRotation(glm::vec3(90.0f, 0.0f, 180.0f));
 
 			// Create and attach a renderer for the model
@@ -1938,7 +1931,7 @@ void DefaultSceneLayer::_CreateScene()
 			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
 			font->Bake();
 			GuiText::Sptr text = BandageText->Add<GuiText>();
-			text->SetText(std::to_string(bandageCount));
+			text->SetText(std::to_string(0));
 			text->SetFont(font);
 			text->SetColor(glm::vec4(1, 1, 0, 1));
 			text->IsEnabled = false;
@@ -1974,7 +1967,7 @@ void DefaultSceneLayer::_CreateScene()
 			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
 			font->Bake();
 			GuiText::Sptr text = AmmoText->Add<GuiText>();
-			text->SetText(std::to_string(ammoCount));
+			text->SetText(std::to_string(5));
 			text->SetFont(font);
 			text->SetColor(glm::vec4(1, 1, 0, 1));
 			text->IsEnabled = false;

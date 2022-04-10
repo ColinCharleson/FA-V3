@@ -46,6 +46,8 @@
 #include "Gameplay/Components/Light.h"
 #include "Gameplay/Components/ShadowCamera.h"
 
+#include "Utils/Windows/FileDialogs.h"
+#include <filesystem>
 //Custom Components
 #include <Gameplay\Components\ItemKeyBehaviour.h>
 #include <Gameplay\Components\ItemBandageBehaviour.h>
@@ -103,14 +105,30 @@ bool pausePressed;
 bool gameWin = false;
 bool gamePaused = false;
 bool levelComplete = false;
+float boltX, boltY, boltZ;
+bool arrowOut = false;
+bool canShoot = true;
+bool hasKey = true, slimeSlow = false;
+int ammoCount = 5, playerHealth = 3, bandageCount = 0;
+int roomType, progressScore;
 #define DEFAULT_WINDOW_WIDTH 1280
 #define DEFAULT_WINDOW_HEIGHT 720
+
+// Stores our GLFW window in a global variable for now
+GLFWwindow* window;
+
+// using namespace should generally be avoided, and if used, make sure it's ONLY in cpp files
+using namespace Gameplay;
+using namespace Gameplay::Physics;
+
+// The scene that we will be rendering
+Scene::Sptr scene = nullptr;
 
 Application::Application() :
 	_window(nullptr),
 	_windowSize({DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT}),
 	_isRunning(false),
-	_isEditor(false),
+	_isEditor(true),
 	_windowTitle("Forgotten Abyss"),
 	_currentScene(nullptr),
 	_targetScene(nullptr)
@@ -181,6 +199,158 @@ void Application::SaveSettings()
 	}
 
 	FileHelpers::WriteContentsToFile(settingsPath.string(), _appSettings.dump(1, '\t'));
+}
+bool RoomFunction()
+{
+
+	double x = rand() / static_cast<double>(RAND_MAX + 1);
+
+	roomType = 1 + static_cast<int>(x * (5.0f - 1.0f));
+
+	if (progressScore < 5)
+	{
+		if (roomType == 1)
+		{
+			progressScore += 1;
+			double x = rand() / static_cast<double>(RAND_MAX + 1);
+
+			int roomVar = 1 + static_cast<int>(x * (4.0f - 1.0f));
+
+			std::string levelToLoad;
+			if (roomVar == 1)
+			{
+				levelToLoad = "One.json";
+				std::cout << "trap 1 loaded";
+			}
+			else if (roomVar == 2)
+			{
+				levelToLoad = "One.json";
+				std::cout << "trap 2 loaded";
+			}
+			else if (roomVar == 3)
+			{
+				levelToLoad = "One.json";
+				std::cout << "trap 3 loaded";
+			}
+
+			scene = nullptr;
+
+			std::string newFilename = std::filesystem::path(levelToLoad).stem().string() + "-manifest.json";
+			ResourceManager::LoadManifest(newFilename);
+			scene = Scene::Load(levelToLoad);
+
+			//scene->Window = window;
+			scene->Awake();
+			return true;
+			// trap room
+		}
+		else if (roomType == 2)
+		{
+			progressScore += 2;
+
+			double x = rand() / static_cast<double>(RAND_MAX + 1);
+
+			int roomVar = 1 + static_cast<int>(x * (4.0f - 1.0f));
+
+			std::string levelToLoad;
+			if (roomVar == 1)
+			{
+				levelToLoad = "One.json";
+				std::cout << "brawl 1 loaded";
+			}
+			else if (roomVar == 2)
+			{
+				levelToLoad = "One.json";
+				std::cout << "brawl 2 loaded";
+			}
+			else if (roomVar == 3)
+			{
+				levelToLoad = "One.json";
+				std::cout << "brawl 3 loaded";
+			}
+
+			scene = nullptr;
+
+			std::string newFilename = std::filesystem::path(levelToLoad).stem().string() + "-manifest.json";
+			ResourceManager::LoadManifest(newFilename);
+			scene = Scene::Load(levelToLoad);
+
+			//scene->Window = window;
+			scene->Awake();
+			return true;
+			// brawl room
+		}
+		else if (roomType == 3)
+		{
+			progressScore += 3;
+			double x = rand() / static_cast<double>(RAND_MAX + 1);
+
+			int roomVar = 1 + static_cast<int>(x * (4.0f - 1.0f));
+
+			std::string levelToLoad;
+			if (roomVar == 1)
+			{
+				levelToLoad = "One.json";
+				std::cout << "combo 1 loaded";
+			}
+			else if (roomVar == 2)
+			{
+				levelToLoad = "One.json";
+				std::cout << "combo 2 loaded";
+			}
+			else if (roomVar == 3)
+			{
+				levelToLoad = "One.json";
+				std::cout << "combo 3 loaded";
+			}
+
+			scene = nullptr;
+
+			std::string newFilename = std::filesystem::path(levelToLoad).stem().string() + "-manifest.json";
+			ResourceManager::LoadManifest(newFilename);
+			scene = Scene::Load(levelToLoad);
+
+			//scene->Window = window;
+			scene->Awake();
+			return true;
+			// combo room
+		}
+		else if (roomType == 4)
+		{
+			progressScore += 0;
+			double x = rand() / static_cast<double>(RAND_MAX + 1);
+
+			int roomVar = 1 + static_cast<int>(x * (4.0f - 1.0f));
+
+			std::string levelToLoad;
+			if (roomVar == 1)
+			{
+				levelToLoad = "One.json";
+				std::cout << "hall 1 loaded";
+			}
+			else if (roomVar == 2)
+			{
+				levelToLoad = "One.json";
+				std::cout << "hall 2 loaded";
+			}
+			else if (roomVar == 3)
+			{
+				levelToLoad = "One.json";
+				std::cout << "hall 3 loaded";
+			}
+
+			scene = nullptr;
+
+			std::string newFilename = std::filesystem::path(levelToLoad).stem().string() + "-manifest.json";
+			ResourceManager::LoadManifest(newFilename);
+			scene = Scene::Load(levelToLoad);
+
+			//scene->Window = window;
+			scene->Awake();
+			return true;
+			// hallway
+		}
+	}
 }
 
 void Application::_Run()
@@ -269,14 +439,19 @@ void Application::_Run()
 
 
 		if (levelComplete)
-		{/*
+		{
 			if (progressScore < 1)
 			{
 				levelComplete = false;
 				hasKey = false;
-				RoomFunction();
+
+				std::optional<std::string> path = FileDialogs::OpenFile("Scene File\0*.json\0\0");
+				if (path.has_value())
+				{
+					LoadScene(path.value());
+				}
 			}
-			else*/
+			else
 			{
 				gameWin = true;
 			}
@@ -307,7 +482,7 @@ void Application::_Run()
 
 		if (startPlaying == true)
 		{
-			glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
 		// Handle scene switching
 		if (_targetScene != nullptr) {

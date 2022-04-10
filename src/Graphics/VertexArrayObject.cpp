@@ -44,7 +44,7 @@ VertexArrayObject::VertexBufferBinding* VertexArrayObject::AddVertexBuffer(const
 		}
 	} 
 	else if (buffer->GetElementCount() != _vertexCount) {
-		LOG_WARN("Buffer element count does not match vertex count of this VAO!!!");
+		//LOG_WARN("Buffer element count does not match vertex count of this VAO!!!");
 	}
 
 	VertexBufferBinding* binding = new VertexBufferBinding();

@@ -41,6 +41,7 @@ namespace Gameplay {
 		// Instead of a "base shader", we can specify a default material
 		std::shared_ptr<Material>  DefaultMaterial;
 
+		GLFWwindow* Window;
 		// Whether the application is in "play mode", lets us leverage editors!
 		bool                       IsPlaying;
 
