@@ -132,6 +132,9 @@
     <ClInclude Include="src\Gameplay\Components\BandageCount.h">
       <Filter>Gameplay\Components</Filter>
     </ClInclude>
+    <ClInclude Include="src\Gameplay\Components\BandageUI.h">
+      <Filter>Gameplay\Components</Filter>
+    </ClInclude>
     <ClInclude Include="src\Gameplay\Components\Bolt.h">
       <Filter>Gameplay\Components</Filter>
     </ClInclude>
@@ -208,6 +211,9 @@
       <Filter>Gameplay\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\Gameplay\Components\NormalAmmoCount.h">
+      <Filter>Gameplay\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Gameplay\Components\NormalAmmoUI.h">
       <Filter>Gameplay\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\Gameplay\Components\ParticleSystem.h">
@@ -494,6 +500,9 @@
     <ClCompile Include="src\Gameplay\Components\BandageCount.cpp">
       <Filter>Gameplay\Components</Filter>
     </ClCompile>
+    <ClCompile Include="src\Gameplay\Components\BandageUI.cpp">
+      <Filter>Gameplay\Components</Filter>
+    </ClCompile>
     <ClCompile Include="src\Gameplay\Components\Bolt.cpp">
       <Filter>Gameplay\Components</Filter>
     </ClCompile>
@@ -567,6 +576,9 @@
       <Filter>Gameplay\Components</Filter>
     </ClCompile>
     <ClCompile Include="src\Gameplay\Components\NormalAmmoCount.cpp">
+      <Filter>Gameplay\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Gameplay\Components\NormalAmmoUI.cpp">
       <Filter>Gameplay\Components</Filter>
     </ClCompile>
     <ClCompile Include="src\Gameplay\Components\ParticleSystem.cpp">

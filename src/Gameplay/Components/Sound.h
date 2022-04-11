@@ -2,6 +2,7 @@
 #include "fmod.hpp"
 #include <string>
 #include <unordered_map>
+#include "fmod_studio.hpp"
 
 class Sound
 {
@@ -15,8 +16,9 @@ public:
 	void playsound(const std::string& soundName);
 	
 private:
-	FMOD::System* Playback;
+	FMOD::Studio::System* Playback;
 	std::unordered_map<std::string, FMOD::Sound*>Sounds;
+	FMOD::System* firstPlayback;
 };
 
 
