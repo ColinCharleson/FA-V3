@@ -21,7 +21,7 @@ ColorCorrectionEffect::ColorCorrectionEffect(bool defaultLut) :
 	});
 
 	if (defaultLut) {
-		Lut = ResourceManager::CreateAsset<Texture3D>("luts/cool.cube");
+		Lut = ResourceManager::CreateAsset<Texture3D>("luts/bloody.cube");
 	}
 }
 

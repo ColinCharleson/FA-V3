@@ -46,7 +46,6 @@ extern float playerX, playerY;
 extern int playerHealth;
 extern float boltX, boltY, boltZ;
 extern bool arrowOut;
-extern glm::quat currentRot;
 
 extern bool onMenu;
 extern bool canShoot;

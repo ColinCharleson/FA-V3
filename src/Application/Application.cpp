@@ -96,12 +96,14 @@
 Application* Application::_singleton = nullptr;
 std::string Application::_applicationName = "INFR-2350U - DEMO";
 
+glm::quat currentRot;
 float playerX, playerY;
 bool onMenu = true;
 bool onUiAmmo = false;
 bool onUiHealth = false;
 bool onUIBandage = false;
 bool pausePressed;
+bool startPlaying = false;
 bool gameWin = false;
 bool gamePaused = false;
 bool levelComplete = false;
@@ -115,7 +117,7 @@ int roomType, progressScore;
 #define DEFAULT_WINDOW_HEIGHT 720
 
 // Stores our GLFW window in a global variable for now
-GLFWwindow* window;
+GLFWwindow* window; 
 
 // using namespace should generally be avoided, and if used, make sure it's ONLY in cpp files
 using namespace Gameplay;
@@ -128,7 +130,7 @@ Application::Application() :
 	_window(nullptr),
 	_windowSize({DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT}),
 	_isRunning(false),
-	_isEditor(true),
+	_isEditor(false),
 	_windowTitle("Forgotten Abyss"),
 	_currentScene(nullptr),
 	_targetScene(nullptr)
@@ -444,7 +446,8 @@ void Application::_Run()
 			{
 				levelComplete = false;
 				hasKey = false;
-
+				gamePaused = true;
+				startPlaying = false;
 				std::optional<std::string> path = FileDialogs::OpenFile("Scene File\0*.json\0\0");
 				if (path.has_value())
 				{

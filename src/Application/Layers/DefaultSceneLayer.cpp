@@ -112,10 +112,6 @@ DefaultSceneLayer::DefaultSceneLayer() :
 
 DefaultSceneLayer::~DefaultSceneLayer() = default;
 
- 
-
-glm::quat currentRot;
-glm::vec3 forward;
 
 void DefaultSceneLayer::OnAppLoad(const nlohmann::json& config) {
 	_CreateScene();
@@ -545,7 +541,10 @@ void DefaultSceneLayer::_CreateScene()
 		{
 			camera->SetPostion(glm::vec3(1.0f, -1.0f, 1.0f));
 			camera->LookAt(glm::vec3(1, -12, 1));
-
+			if (isnan(camera->GetRotation().x))
+			{
+				std::cout << "???????";
+			}
 			camera->Add<SimpleCameraControl>();
 
 		//	Camera::Sptr cam = camera->Add<Camera>();
@@ -767,7 +766,7 @@ void DefaultSceneLayer::_CreateScene()
 		GameObject::Sptr door = scene->CreateGameObject("Door");
 		{
 			// Set position in the scene
-			door->SetPostion(glm::vec3(0.0f, -5.0f, 0.0f));
+			door->SetPostion(glm::vec3(1.0f, -2.0f, 0.0f));
 			door->SetRotation(glm::vec3(90.0f, 0.0f, 180.0f));
 
 			// Create and attach a renderer for the model
@@ -778,7 +777,7 @@ void DefaultSceneLayer::_CreateScene()
 			door->Add<DoorBehaviour>();
 			impo->AddChild(door);
 		}
-		GameObject::Sptr trap = scene->CreateGameObject("Traps");
+			GameObject::Sptr trap = scene->CreateGameObject("Traps");
 		GameObject::Sptr spike1 = scene->CreateGameObject("Spike Trap");
 		{
 			// Set position in the scene
@@ -925,7 +924,7 @@ void DefaultSceneLayer::_CreateScene()
 			renderer->SetMaterial(bonesMaterial);
 			deccor->AddChild(ribcage4);
 		}
-		{//walls start///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		 {//walls start///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			GameObject::Sptr wall = scene->CreateGameObject("Walls");
 
 			GameObject::Sptr wall1 = scene->CreateGameObject("wall 1");
