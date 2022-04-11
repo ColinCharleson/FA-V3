@@ -541,10 +541,7 @@ void DefaultSceneLayer::_CreateScene()
 		{
 			camera->SetPostion(glm::vec3(1.0f, -1.0f, 1.0f));
 			camera->LookAt(glm::vec3(1, -12, 1));
-			if (isnan(camera->GetRotation().x))
-			{
-				std::cout << "???????";
-			}
+			
 			camera->Add<SimpleCameraControl>();
 
 		//	Camera::Sptr cam = camera->Add<Camera>();
