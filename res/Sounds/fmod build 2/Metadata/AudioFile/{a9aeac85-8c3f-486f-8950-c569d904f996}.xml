@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.00.00">
+	<object class="AudioFile" id="{a9aeac85-8c3f-486f-8950-c569d904f996}">
+		<property name="assetPath">
+			<value>Horror_Game_Door_Metal_Lock_Unlock_Latch_Turn_Handle_4.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.53195011337868481</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{296c3e27-ad18-4357-85ba-241dd34c6d46}</destination>
+		</relationship>
+	</object>
+</objects>

@@ -1,11 +1,14 @@
 #include "Sound.h"
+#include "fmod.hpp"
 #include "fmod_errors.h"
+#include "fmod_studio.hpp"
 #include <iostream>
 
 int Sound::errorcheck(FMOD_RESULT Result) 
 {
 	if (Result != FMOD_OK) {
 		std::cout << "Fmod Error: " << FMOD_ErrorString(Result);
+		printf("FMOD has encountered an error: (%d) %s at %s\n", Result, FMOD_ErrorString(Result));
 
 	#ifdef DEBUG
 		__debugbreak();
@@ -18,8 +21,11 @@ int Sound::errorcheck(FMOD_RESULT Result)
 
 void Sound::init()
 {
-	errorcheck(FMOD::System_Create(&Playback));
-	errorcheck(Playback->init(32, FMOD_INIT_NORMAL, nullptr));
+	//errorcheck(FMOD::Studio::System::create(&Playback));
+	//errorcheck(Playback->initialize(128, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, nullptr));
+
+	errorcheck(FMOD::System_Create(&firstPlayback));
+	errorcheck(firstPlayback->init(32, FMOD_INIT_NORMAL, nullptr));
 
 }
 
@@ -30,7 +36,7 @@ void Sound::update()
 
 void Sound::shutdown()
 {
-	errorcheck(Playback->close());
+	errorcheck(firstPlayback->close());
 	errorcheck(Playback->release());
 }
 
@@ -48,7 +54,7 @@ void Sound::loadsound(const std::string& soundName, const std::string& filename,
 	mode |= (bstream) ? FMOD_CREATESTREAM : FMOD_CREATECOMPRESSEDSAMPLE;
 
 	FMOD::Sound* LoadedSound;
-	errorcheck(Playback->createSound(filename.c_str(), mode, nullptr, &LoadedSound));
+	//errorcheck(firstPlayback->create(filename.c_str(), mode, nullptr, &LoadedSound));
 
 	if (LoadedSound != nullptr) {
 		Sounds[soundName] = LoadedSound;
@@ -67,5 +73,14 @@ void Sound::unloadsound(const std::string& soundName)
 
 void Sound::playsound(const std::string& soundName)
 {
-	Playback->playSound(Sounds[soundName], nullptr, false, nullptr);
+	firstPlayback->playSound(Sounds[soundName], nullptr, false, nullptr);
 }
+
+/*syntax for looping events
+	// Get the Looping Ambience event
+	FMOD::Studio::EventDescription* loopingAmbienceDescription = NULL;
+	ERRCHECK( system->getEvent("event:/Ambience/Country", &loopingAmbienceDescription) );
+
+	FMOD::Studio::EventInstance* loopingAmbienceInstance = NULL;
+	ERRCHECK( loopingAmbienceDescription->createInstance(&loopingAmbienceInstance) );
+	*/

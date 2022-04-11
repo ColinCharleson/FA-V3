@@ -93,6 +93,7 @@
 #include "Layers/ParticleLayer.h"
 #include "Layers/PostProcessingLayer.h"
 
+
 Application* Application::_singleton = nullptr;
 std::string Application::_applicationName = "INFR-2350U - DEMO";
 
@@ -355,10 +356,47 @@ bool RoomFunction()
 
 void Application::_Run()
 {
-	Sound soundplay;
-	soundplay.init();
-	soundplay.loadsound("Music", "Sounds/title_screen.wav", true);
-	soundplay.playsound("Music");
+
+	//void* extraDriverData = NULL;
+	//Sound::init(&extraDriverData);
+
+	//Sound soundplay;
+	//soundplay.init();
+
+	FMOD::Studio::System* system = NULL;
+	Sound::errorcheck(FMOD::Studio::System::create(&system));
+
+	FMOD::System* coreSystem = NULL;
+	Sound::errorcheck(system->getCoreSystem(&coreSystem));
+	Sound::errorcheck(coreSystem->setSoftwareFormat(0, FMOD_SPEAKERMODE_5POINT1, 0));
+
+	Sound::errorcheck(system->initialize(1024, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, nullptr));
+
+	FMOD::Studio::Bank* masterBank = NULL;
+	Sound::errorcheck(system->loadBankFile(("Sounds/Master.bank"), FMOD_STUDIO_LOAD_BANK_NORMAL, &masterBank));
+
+	FMOD::Studio::Bank* stringsBank = NULL;
+	Sound::errorcheck(system->loadBankFile(("Sounds/Master.strings.bank"), FMOD_STUDIO_LOAD_BANK_NORMAL, &stringsBank));
+
+	FMOD::Studio::Bank* sfxBank = NULL;
+	Sound::errorcheck(system->loadBankFile(("Sounds/Test.bank"), FMOD_STUDIO_LOAD_BANK_NORMAL, &sfxBank));
+	
+	//get single event
+	FMOD::Studio::EventDescription* explosionDescription = NULL;
+	Sound::errorcheck(system->getEvent("event:/BG_music", &explosionDescription));
+	
+	// Start loading test sample data and keep it in memory
+	Sound::errorcheck(explosionDescription->loadSampleData());
+
+	// One-shot event
+	FMOD::Studio::EventInstance* eventInstance = NULL;
+	Sound::errorcheck(explosionDescription->createInstance(&eventInstance));
+
+	Sound::errorcheck(eventInstance->start());
+
+	// Release will clean up the instance when it completes
+	Sound::errorcheck(eventInstance->release());
+
 	// TODO: Register layers
 	_layers.push_back(std::make_shared<GLAppLayer>());
 	_layers.push_back(std::make_shared<LogicUpdateLayer>());
@@ -400,7 +438,6 @@ void Application::_Run()
 	// Infinite loop as long as the application is running
 	while (_isRunning) {
 
-		soundplay.update();
 		Sleep(16);
 
 		bool startPlaying = false;
@@ -414,11 +451,11 @@ void Application::_Run()
 			startPlaying = true;
 		}
 
-
 		if (InputEngine::IsKeyDown(GLFW_KEY_W))
 		{
 			playerX = _currentScene->MainCamera->GetGameObject()->GetPosition().x;
 			playerY = _currentScene->MainCamera->GetGameObject()->GetPosition().y;
+
 		}
 		if (InputEngine::IsKeyDown(GLFW_KEY_A))
 		{
@@ -436,7 +473,6 @@ void Application::_Run()
 			playerY = _currentScene->MainCamera->GetGameObject()->GetPosition().y;
 
 		}
-
 
 		if (levelComplete)
 		{
@@ -517,6 +553,7 @@ void Application::_Run()
 
 		// Core update loop
 		if (_currentScene != nullptr) {
+			Sound::errorcheck(system->update());
 			_Update();
 			_LateUpdate();
 			_PreRender();
