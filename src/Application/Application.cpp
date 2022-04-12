@@ -344,6 +344,21 @@ void Application::_Run()
 			}
 			glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
+		if (playerHealth <= 0)
+		{
+			onUiHealth = false;
+			onUIBandage = false;
+			onUiAmmo = false;
+			if (InputEngine::IsKeyDown(GLFW_KEY_SPACE))
+			{
+				exit(0);
+			}
+			if (InputEngine::IsKeyDown(GLFW_KEY_ESCAPE))
+			{
+				exit(0);
+			}
+			glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
 		bool pressed = glfwGetKey(_window, GLFW_KEY_ESCAPE);
 		if (pressed)
 		{
