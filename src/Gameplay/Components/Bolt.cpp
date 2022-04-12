@@ -74,7 +74,7 @@ void Bolt::Update(float deltaTime)
 						{
 							arrowOut = true;
 							firedRot = currentRot;
-							fireTime = 3;
+							fireTime = 0.5f;
 						}
 					}
 				} 
