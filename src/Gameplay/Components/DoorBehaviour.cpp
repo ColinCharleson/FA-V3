@@ -54,12 +54,9 @@ void DoorBehaviour::Update(float deltaTime) {
 				if (hasKey == true)
 				{
 					levelComplete = true;
-					
-					std::cout << "Win: " << progressScore << std::endl;
 				}
 				else
 				{
-					std::cout << "Door is locked" << std::endl;
 				}
 			}
 				

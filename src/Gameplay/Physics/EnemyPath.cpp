@@ -163,13 +163,13 @@ void EnemyPath::Update(float deltaTime)
 					{
 						playerHealth -= 1;
 						deathTime = 2;
-						std::cout << "Player health: " << playerHealth << std::endl;
+						//std::cout << "Player health: " << playerHealth << std::endl;
 						canShoot = false;
 
 						if (playerHealth > 0)
 						{
 							playerHealth -= 1;
-							std::cout << "Player health: " << playerHealth << std::endl;
+							//std::cout << "Player health: " << playerHealth << std::endl;
 
 						}
 					}

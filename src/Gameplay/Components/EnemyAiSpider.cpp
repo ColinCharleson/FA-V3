@@ -107,7 +107,6 @@ void EnemyBehaviourSpider::Update(float deltaTime)
 					{
 						playerHealth -= 1;
 						deathTime2 = 2;
-						std::cout << "Player health: " << playerHealth << std::endl;
 						canShoot = false;
 					}
 				}

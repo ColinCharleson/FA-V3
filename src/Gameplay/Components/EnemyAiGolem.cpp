@@ -69,7 +69,6 @@ void EnemyBehaviourGolem::Update(float deltaTime)
 					if (dmgTime2 <= 0)
 					{
 						golemHealth -= 1;
-						cout << golemHealth;
 						dmgTime2 = 2;
 
 
@@ -123,7 +122,6 @@ void EnemyBehaviourGolem::Update(float deltaTime)
 					{
 						playerHealth -= 1;
 						deathTime1 = 2;
-						std::cout << "Player health: " << playerHealth << std::endl;
 						canShoot = false;
 					}
 				}

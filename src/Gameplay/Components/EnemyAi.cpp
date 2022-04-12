@@ -74,7 +74,6 @@ void EnemyBehaviour::Update(float deltaTime)
 							Texture2D::Sptr oneHealth = ResourceManager::CreateAsset<Texture2D>("textures/SkeletonTex_Skeleton_1Health_1000100010_FXIX.png");
 							_renderer->GetMaterial()->Set("u_Material.AlbedoMap", oneHealth);
 						}
-						cout << skeletonHealth;
 						dmgTime = 2;
 
 						if (skeletonHealth == 0)
@@ -129,7 +128,6 @@ void EnemyBehaviour::Update(float deltaTime)
 					{
 						playerHealth -= 1;
 						deathTime = 2;
-						std::cout << "Player health: " << playerHealth << std::endl;
 						canShoot = false;
 					}
 				}
