@@ -369,7 +369,7 @@ void Application::_Run()
 
 		if (startPlaying == true)
 		{
-			glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		}
 		// Handle scene switching
 		if (_targetScene != nullptr) {

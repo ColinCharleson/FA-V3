@@ -21,6 +21,6 @@ protected:
 	void _CreateScene();
 	void _CreateScene2();
 	void _CreateScene3();
-	/*void _CreateScene4();
-	void _CreateScene5();*/
+	void _CreateScene4();
+	void _CreateScene5();
 };
