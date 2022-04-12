@@ -13,7 +13,7 @@ void main() {
     float mdf = 0.1;
     vec2 uv = inUV;
 
-    float noise = (fract(sin(dot(uv, vec2(12.9898,78.233)*2.0)) * 43758.5453));
+    float noise = (fract(sin(dot(uv, vec2(12.9898,78.233)*2.0)) * 43758.5453))/2;
 
     vec3 tex = texture(s_Image, uv).rgb;
     
