@@ -110,22 +110,22 @@ void EnemyPath::Update(float deltaTime)
 				{
 					if (GetGameObject()->GetPosition().x > playerX)
 					{
-						GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x - 0.01, GetGameObject()->GetPosition().y, GetGameObject()->GetPosition().z));
+						GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x - 0.02, GetGameObject()->GetPosition().y, GetGameObject()->GetPosition().z));
 					}
 
 					if (GetGameObject()->GetPosition().y > playerY)
 					{
-						GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x, GetGameObject()->GetPosition().y - 0.01, GetGameObject()->GetPosition().z));
+						GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x, GetGameObject()->GetPosition().y - 0.02, GetGameObject()->GetPosition().z));
 					}
 
 					if (GetGameObject()->GetPosition().x < playerX)
 					{
-						GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x + 0.01, GetGameObject()->GetPosition().y, GetGameObject()->GetPosition().z));
+						GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x + 0.02, GetGameObject()->GetPosition().y, GetGameObject()->GetPosition().z));
 					}
 
 					if (GetGameObject()->GetPosition().y < playerY)
 					{
-						GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x, GetGameObject()->GetPosition().y + 0.01, GetGameObject()->GetPosition().z));
+						GetGameObject()->SetPostion(glm::vec3(GetGameObject()->GetPosition().x, GetGameObject()->GetPosition().y + 0.02, GetGameObject()->GetPosition().z));
 					}
 
 					GetGameObject()->LookAt(glm::vec3(playerX, playerY, 0));

@@ -341,6 +341,10 @@ void Application::_Run()
 			else*/
 			{
 				gameWin = true;
+				onUiHealth = false;
+				onUIBandage = false;
+				onUiAmmo = false;
+
 			}
 		}
 
