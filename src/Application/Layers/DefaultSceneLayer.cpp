@@ -1920,7 +1920,7 @@ void DefaultSceneLayer::_CreateScene()
 			glEnable(GL_BLEND);
 			BandagePack->RenderGUI();
 			RectTransform::Sptr transform = BandagePack->Add<RectTransform>();
-			transform->SetPosition(glm::vec2(220, 920));
+			transform->SetPosition(glm::vec3(220, 920,10));
 			transform->SetSize(glm::vec2(140, 50));
 			GuiPanel::Sptr testPanel = BandagePack->Add<GuiPanel>();
 			testPanel->SetTexture(Bandage);
@@ -1934,7 +1934,7 @@ void DefaultSceneLayer::_CreateScene()
 
 		GameObject::Sptr BandageText = scene->CreateGameObject("Bandage txt");
 		{
-			glEnable(GL_BLEND);
+			
 			RectTransform::Sptr transform = BandageText->Add<RectTransform>();
 			transform->SetPosition(glm::vec3(223, 975, 50));
 			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
@@ -1957,7 +1957,7 @@ void DefaultSceneLayer::_CreateScene()
 			glEnable(GL_BLEND);
 			AmmoPack->RenderGUI();
 			RectTransform::Sptr transform1 = AmmoPack->Add<RectTransform>();
-			transform1->SetPosition(glm::vec2(1700, 920));
+			transform1->SetPosition(glm::vec3(1700, 920,10));
 			transform1->SetSize(glm::vec2(99, 50));
 			GuiPanel::Sptr testPanel1 = AmmoPack->Add<GuiPanel>();
 			testPanel1->SetTexture(ammoHUD);
@@ -1970,7 +1970,7 @@ void DefaultSceneLayer::_CreateScene()
 		GameObject::Sptr AmmoText = scene->CreateGameObject("Ammo txt");
 		{
 
-			glEnable(GL_BLEND);
+		
 			RectTransform::Sptr transform = AmmoText->Add<RectTransform>();
 			transform->SetPosition(glm::vec3(1700, 975, 50));
 			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
@@ -3704,7 +3704,7 @@ void DefaultSceneLayer::_CreateScene2()
 			glEnable(GL_BLEND);
 			BandagePack->RenderGUI();
 			RectTransform::Sptr transform = BandagePack->Add<RectTransform>();
-			transform->SetPosition(glm::vec2(220, 920));
+			transform->SetPosition(glm::vec3(220, 920,10));
 			transform->SetSize(glm::vec2(140, 50));
 			GuiPanel::Sptr testPanel = BandagePack->Add<GuiPanel>();
 			testPanel->SetTexture(Bandage);
@@ -3718,7 +3718,6 @@ void DefaultSceneLayer::_CreateScene2()
 
 		GameObject::Sptr BandageText = scene->CreateGameObject("Bandage txt");
 		{
-			glEnable(GL_BLEND);
 			RectTransform::Sptr transform = BandageText->Add<RectTransform>();
 			transform->SetPosition(glm::vec3(223, 975, 50));
 			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
@@ -3732,8 +3731,7 @@ void DefaultSceneLayer::_CreateScene2()
 
 			BandageText->Add<BandageCount>()->BandagePack = text;
 			UI->AddChild(BandageText);
-		}
-
+		} 
 
 
 		GameObject::Sptr AmmoPack = scene->CreateGameObject("Ammo UI");
@@ -3741,7 +3739,7 @@ void DefaultSceneLayer::_CreateScene2()
 			glEnable(GL_BLEND);
 			AmmoPack->RenderGUI();
 			RectTransform::Sptr transform1 = AmmoPack->Add<RectTransform>();
-			transform1->SetPosition(glm::vec2(1700, 920));
+			transform1->SetPosition(glm::vec3(1700, 920,10));
 			transform1->SetSize(glm::vec2(99, 50));
 			GuiPanel::Sptr testPanel1 = AmmoPack->Add<GuiPanel>();
 			testPanel1->SetTexture(ammoHUD);
@@ -3754,7 +3752,6 @@ void DefaultSceneLayer::_CreateScene2()
 		GameObject::Sptr AmmoText = scene->CreateGameObject("Ammo txt");
 		{
 
-			glEnable(GL_BLEND);
 			RectTransform::Sptr transform = AmmoText->Add<RectTransform>();
 			transform->SetPosition(glm::vec3(1700, 975, 50));
 			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
@@ -5396,7 +5393,7 @@ void DefaultSceneLayer::_CreateScene3()
 			glEnable(GL_BLEND);
 			BandagePack->RenderGUI();
 			RectTransform::Sptr transform = BandagePack->Add<RectTransform>();
-			transform->SetPosition(glm::vec2(220, 920));
+			transform->SetPosition(glm::vec3(220, 920, 10));
 			transform->SetSize(glm::vec2(140, 50));
 			GuiPanel::Sptr testPanel = BandagePack->Add<GuiPanel>();
 			testPanel->SetTexture(Bandage);
@@ -5410,7 +5407,7 @@ void DefaultSceneLayer::_CreateScene3()
 
 		GameObject::Sptr BandageText = scene->CreateGameObject("Bandage txt");
 		{
-			glEnable(GL_BLEND);
+		
 			RectTransform::Sptr transform = BandageText->Add<RectTransform>();
 			transform->SetPosition(glm::vec3(223, 975, 50));
 			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
@@ -5433,7 +5430,7 @@ void DefaultSceneLayer::_CreateScene3()
 			glEnable(GL_BLEND);
 			AmmoPack->RenderGUI();
 			RectTransform::Sptr transform1 = AmmoPack->Add<RectTransform>();
-			transform1->SetPosition(glm::vec2(1700, 920));
+			transform1->SetPosition(glm::vec3(1700, 920, 10));
 			transform1->SetSize(glm::vec2(99, 50));
 			GuiPanel::Sptr testPanel1 = AmmoPack->Add<GuiPanel>();
 			testPanel1->SetTexture(ammoHUD);
@@ -5446,7 +5443,7 @@ void DefaultSceneLayer::_CreateScene3()
 		GameObject::Sptr AmmoText = scene->CreateGameObject("Ammo txt");
 		{
 
-			glEnable(GL_BLEND);
+		
 			RectTransform::Sptr transform = AmmoText->Add<RectTransform>();
 			transform->SetPosition(glm::vec3(1700, 975, 50));
 			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
@@ -7306,7 +7303,7 @@ void DefaultSceneLayer::_CreateScene4()
 			glEnable(GL_BLEND);
 			BandagePack->RenderGUI();
 			RectTransform::Sptr transform = BandagePack->Add<RectTransform>();
-			transform->SetPosition(glm::vec2(220, 920));
+			transform->SetPosition(glm::vec3(220, 920,10));
 			transform->SetSize(glm::vec2(140, 50));
 			GuiPanel::Sptr testPanel = BandagePack->Add<GuiPanel>();
 			testPanel->SetTexture(Bandage);
@@ -7320,7 +7317,7 @@ void DefaultSceneLayer::_CreateScene4()
 
 		GameObject::Sptr BandageText = scene->CreateGameObject("Bandage txt");
 		{
-			glEnable(GL_BLEND);
+			
 			RectTransform::Sptr transform = BandageText->Add<RectTransform>();
 			transform->SetPosition(glm::vec3(223, 975, 50));
 			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
@@ -7343,7 +7340,7 @@ void DefaultSceneLayer::_CreateScene4()
 			glEnable(GL_BLEND);
 			AmmoPack->RenderGUI();
 			RectTransform::Sptr transform1 = AmmoPack->Add<RectTransform>();
-			transform1->SetPosition(glm::vec2(1700, 920));
+			transform1->SetPosition(glm::vec3(1700, 920, 10));
 			transform1->SetSize(glm::vec2(99, 50));
 			GuiPanel::Sptr testPanel1 = AmmoPack->Add<GuiPanel>();
 			testPanel1->SetTexture(ammoHUD);
@@ -7356,7 +7353,7 @@ void DefaultSceneLayer::_CreateScene4()
 		GameObject::Sptr AmmoText = scene->CreateGameObject("Ammo txt");
 		{
 
-			glEnable(GL_BLEND);
+		
 			RectTransform::Sptr transform = AmmoText->Add<RectTransform>();
 			transform->SetPosition(glm::vec3(1700, 975, 50));
 			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
@@ -9107,7 +9104,7 @@ void DefaultSceneLayer::_CreateScene5()
 			glEnable(GL_BLEND);
 			BandagePack->RenderGUI();
 			RectTransform::Sptr transform = BandagePack->Add<RectTransform>();
-			transform->SetPosition(glm::vec2(220, 920));
+			transform->SetPosition(glm::vec3(220, 920, 10));
 			transform->SetSize(glm::vec2(140, 50));
 			GuiPanel::Sptr testPanel = BandagePack->Add<GuiPanel>();
 			testPanel->SetTexture(Bandage);
@@ -9121,7 +9118,7 @@ void DefaultSceneLayer::_CreateScene5()
 
 		GameObject::Sptr BandageText = scene->CreateGameObject("Bandage txt");
 		{
-			glEnable(GL_BLEND);
+			
 			RectTransform::Sptr transform = BandageText->Add<RectTransform>();
 			transform->SetPosition(glm::vec3(223, 975, 50));
 			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);
@@ -9144,7 +9141,7 @@ void DefaultSceneLayer::_CreateScene5()
 			glEnable(GL_BLEND);
 			AmmoPack->RenderGUI();
 			RectTransform::Sptr transform1 = AmmoPack->Add<RectTransform>();
-			transform1->SetPosition(glm::vec2(1700, 920));
+			transform1->SetPosition(glm::vec3(1700, 920,10));
 			transform1->SetSize(glm::vec2(99, 50));
 			GuiPanel::Sptr testPanel1 = AmmoPack->Add<GuiPanel>();
 			testPanel1->SetTexture(ammoHUD);
@@ -9157,7 +9154,7 @@ void DefaultSceneLayer::_CreateScene5()
 		GameObject::Sptr AmmoText = scene->CreateGameObject("Ammo txt");
 		{
 
-			glEnable(GL_BLEND);
+			
 			RectTransform::Sptr transform = AmmoText->Add<RectTransform>();
 			transform->SetPosition(glm::vec3(1700, 975, 50));
 			Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 20.0f);

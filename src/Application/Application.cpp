@@ -369,12 +369,11 @@ void Application::_Run()
 					gamePaused = !gamePaused;
 				}
 				pausePressed = pressed;
-
+				onUiHealth = false;
+				onUIBandage = false;
+				onUiAmmo = false;
 
 			}
-			onUiHealth = false;
-			onUIBandage = false;
-			onUiAmmo = false;
 		}
 		else
 		{

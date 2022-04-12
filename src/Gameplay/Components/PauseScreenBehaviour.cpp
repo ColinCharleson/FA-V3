@@ -35,17 +35,38 @@ PauseScreen::Sptr PauseScreen::FromJson(const nlohmann::json& blob) {
 }
 
 extern bool gamePaused;
+extern bool onMenu;
+extern bool onUiHealth;
+extern bool onUIBandage;
+extern bool onUiAmmo;
 
 void PauseScreen::Update(float deltaTime) {
 	Gameplay::IComponent::Sptr ptr = testPanel.lock();
 
-	if (gamePaused == true)
-	{
-		ptr->IsEnabled = true;
-	}
-	else
-	{
-		ptr->IsEnabled = false;
-	}
+	
+	
+
+		if (gamePaused == true)
+		{
+			if (onMenu == false)
+			{
+				ptr->IsEnabled = true;
+				
+			}
+			onUiHealth = false;
+			onUIBandage = false;
+			onUiAmmo = false;
+		}
+		else
+		{
+			if (onMenu == false)
+			{
+				ptr->IsEnabled = false;
+
+			}
+			
+		}
+	
+
 }
 
