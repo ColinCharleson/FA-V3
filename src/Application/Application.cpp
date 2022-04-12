@@ -111,7 +111,7 @@ bool levelComplete = false;
 float boltX, boltY, boltZ;
 bool arrowOut = false;
 bool canShoot = true;
-bool hasKey = true, slimeSlow = false;
+bool hasKey = false, slimeSlow = false;
 int ammoCount = 5, playerHealth = 3, bandageCount = 0;
 int roomType, progressScore;
 #define DEFAULT_WINDOW_WIDTH 1280
