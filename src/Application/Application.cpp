@@ -326,33 +326,14 @@ void Application::_Run()
 
 		if (levelComplete) 
 		{
-			/*if (progressScore < 1)
-			{
-				levelComplete = false;
-				hasKey = false;
-				gamePaused = true;
-				startPlaying = false;
-				std::optional<std::string> path = FileDialogs::OpenFile("Scene File\0*.json\0\0");
-				if (path.has_value())
-				{
-					LoadScene(path.value());
-				}
-			}
-			else*/
 			{
 				gameWin = true;
-				onUiHealth = false;
-				onUIBandage = false;
-				onUiAmmo = false;
-
 			}
 		}
 
 		if (gameWin)
 		{
-			onUiHealth = false;
-			onUIBandage = false;
-			onUiAmmo = false;
+			
 			if (InputEngine::IsKeyDown(GLFW_KEY_SPACE))
 			{
 				exit(0);

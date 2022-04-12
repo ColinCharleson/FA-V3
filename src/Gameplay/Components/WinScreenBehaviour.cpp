@@ -35,11 +35,17 @@ WinScreen::Sptr WinScreen::FromJson(const nlohmann::json& blob) {
 }
 
 extern bool gameWin;
+extern bool onUiHealth;
+extern bool onUIBandage;
+extern bool onUiAmmo;
 void WinScreen::Update(float deltaTime) {
 	Gameplay::IComponent::Sptr ptr = testPanel.lock();
 	if (gameWin == true)
 	{
 		ptr->IsEnabled = true;
+		onUiHealth = false;
+		onUIBandage = false;
+		onUiAmmo = false;
 	}
 }
 
