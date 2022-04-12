@@ -62,7 +62,7 @@ void EnemyBehaviour::Update(float deltaTime)
 	{
 		if (gamePaused == false)
 		{
-			if ((sqrt(pow(GetGameObject()->GetPosition().x - boltX, 2) + pow(GetGameObject()->GetPosition().y - boltY, 2) + pow(GetGameObject()->GetPosition().z - boltZ, 2) * 2)) <= 1.0f)
+			if ((sqrt(pow(GetGameObject()->GetPosition().x - boltX, 2) + pow(GetGameObject()->GetPosition().y - boltY, 2) + pow((GetGameObject()->GetPosition().z+0.5f) - boltZ, 2) * 2)) <= 1.0f)
 			{
 				if (arrowOut == true)
 				{

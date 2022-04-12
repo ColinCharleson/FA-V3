@@ -114,8 +114,8 @@ bool canShoot = true;
 bool hasKey = false, slimeSlow = false;
 int ammoCount = 5, playerHealth = 3, bandageCount = 0;
 int roomType, progressScore;
-#define DEFAULT_WINDOW_WIDTH 1280
-#define DEFAULT_WINDOW_HEIGHT 720
+#define DEFAULT_WINDOW_WIDTH 1920
+#define DEFAULT_WINDOW_HEIGHT 1080
 
 // Stores our GLFW window in a global variable for now
 GLFWwindow* window; 

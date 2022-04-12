@@ -72,7 +72,7 @@ void EnemyPath::Update(float deltaTime)
 	{
 		if (gamePaused == false)
 		{
-			if ((sqrt(pow(GetGameObject()->GetPosition().x - boltX, 2) + pow(GetGameObject()->GetPosition().y - boltY, 2) + pow(GetGameObject()->GetPosition().z - boltZ, 2) * 2)) <= 1.5f)
+			if ((sqrt(pow(GetGameObject()->GetPosition().x - boltX, 2) + pow(GetGameObject()->GetPosition().y - boltY, 2) + pow((GetGameObject()->GetPosition().z+1) - boltZ, 2) * 2)) <= 1.5f)
 			{
 				if (arrowOut == true)
 				{
