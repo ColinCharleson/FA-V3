@@ -35,11 +35,17 @@ LoseScreen::Sptr LoseScreen::FromJson(const nlohmann::json& blob) {
 }
 
 extern int playerHealth;
+extern bool onUiHealth;
+extern bool onUIBandage;
+extern bool onUiAmmo;
 void LoseScreen::Update(float deltaTime) {
 	Gameplay::IComponent::Sptr ptr = imageLose.lock();
 	if (playerHealth == 0)
 	{
 		ptr->IsEnabled = true;
+		onUiHealth = false;
+		onUIBandage = false;
+		onUiAmmo = false;
 	}
 }
 
