@@ -376,6 +376,7 @@ void Application::_Run()
 			}
 		}
 
+
 		if (gameWin)
 		{
 			
@@ -405,25 +406,29 @@ void Application::_Run()
 			glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
 		bool pressed = glfwGetKey(_window, GLFW_KEY_ESCAPE);
-		if (pressed)
+		if (onMenu == false)
 		{
-			if (gameWin == false)
+			if (pressed)
 			{
-				if (pausePressed == false)
+				if (gameWin == false)
 				{
-					gamePaused = !gamePaused;
-				}
-				pausePressed = pressed;
-				onUiHealth = false;
-				onUIBandage = false;
-				onUiAmmo = false;
+					if (pausePressed == false)
+					{
+						gamePaused = !gamePaused;
+					}
+					pausePressed = pressed;
+					onUiHealth = false;
+					onUIBandage = false;
+					onUiAmmo = false;
 
+				}
+			}
+			else
+			{
+				pausePressed = false;
 			}
 		}
-		else
-		{
-			pausePressed = false;
-		}
+		
 
 
 		if (startPlaying == true)

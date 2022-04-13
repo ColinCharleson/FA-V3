@@ -53,9 +53,7 @@ void PauseScreen::Update(float deltaTime) {
 				ptr->IsEnabled = true;
 				
 			}
-			onUiHealth = false;
-			onUIBandage = false;
-			onUiAmmo = false;
+			
 		}
 		else
 		{
