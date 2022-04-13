@@ -38,6 +38,7 @@
 #include "Gameplay/GameObject.h"
 #include "Gameplay/Scene.h"
 #include "Gameplay/Components/Light.h"
+#include "Gameplay/Components/Sound.h"
 
 // Components
 #include "Gameplay/Components/IComponent.h"
@@ -1552,7 +1553,6 @@ void DefaultSceneLayer::_CreateScene()
 			spider1->SetPostion(glm::vec3(-5.0f, -13.0f, 0.0f));
 			spider1->SetRotation(glm::vec3(90.0f, 0.0f, -90.0f));
 			spider1->SetScale(glm::vec3(0.6f, 0.6f, 0.6f));
-
 
 			// Create and attach a renderer for the model
 			RenderComponent::Sptr renderer = spider1->Add<RenderComponent>();

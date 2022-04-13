@@ -17,7 +17,7 @@ public:
 
 	virtual void Awake() override;
 	virtual void Update(float deltaTime) override;
-
+	bool chasing;
 
 
 	float StartVelocity;

@@ -76,11 +76,4 @@ void Sound::playsound(const std::string& soundName)
 	firstPlayback->playSound(Sounds[soundName], nullptr, false, nullptr);
 }
 
-/*syntax for looping events
-	// Get the Looping Ambience event
-	FMOD::Studio::EventDescription* loopingAmbienceDescription = NULL;
-	ERRCHECK( system->getEvent("event:/Ambience/Country", &loopingAmbienceDescription) );
 
-	FMOD::Studio::EventInstance* loopingAmbienceInstance = NULL;
-	ERRCHECK( loopingAmbienceDescription->createInstance(&loopingAmbienceInstance) );
-	*/

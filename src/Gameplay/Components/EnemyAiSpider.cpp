@@ -5,6 +5,7 @@
 #include "Gameplay/Physics/RigidBody.h"
 #include "Utils/ImGuiHelper.h"
 #include "Gameplay/Components/TriggerVolumeEnterBehaviour.h"
+#include "Gameplay/Components/Sound.h"
 using namespace std;
 void EnemyBehaviourSpider::Awake()
 {
@@ -15,6 +16,7 @@ void EnemyBehaviourSpider::Awake()
 		_playerInTrigger = false;
 		_startPosiiton = GetGameObject()->GetPosition();
 	}
+
 }
 
 
@@ -71,7 +73,6 @@ void EnemyBehaviourSpider::Update(float deltaTime)
 			}
 			if ((sqrt(pow(GetGameObject()->GetPosition().x - playerX, 2) + pow(GetGameObject()->GetPosition().y - playerY, 2) * 2)) <= 4)
 			{
-
 
 				if (GetGameObject()->GetPosition().x > playerX)
 				{

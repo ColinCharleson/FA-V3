@@ -228,24 +228,57 @@ void Application::_Run()
 	FMOD::Studio::Bank* stringsBank = NULL;
 	Sound::errorcheck(system->loadBankFile(("Sounds/Master.strings.bank"), FMOD_STUDIO_LOAD_BANK_NORMAL, &stringsBank));
 
-	FMOD::Studio::Bank* sfxBank = NULL;
-	Sound::errorcheck(system->loadBankFile(("Sounds/Test.bank"), FMOD_STUDIO_LOAD_BANK_NORMAL, &sfxBank));
+	FMOD::Studio::Bank* sceneBank = NULL;
+	Sound::errorcheck(system->loadBankFile(("Sounds/Scene.bank"), FMOD_STUDIO_LOAD_BANK_NORMAL, &sceneBank));
 	
-	//get single event
+	FMOD::Studio::Bank* enemyBank = NULL;
+	Sound::errorcheck(system->loadBankFile(("Sounds/Enemies.bank"), FMOD_STUDIO_LOAD_BANK_NORMAL, &enemyBank));
+
+	FMOD::Studio::Bank* environmentBank = NULL;
+	Sound::errorcheck(system->loadBankFile(("Sounds/Environment.bank"), FMOD_STUDIO_LOAD_BANK_NORMAL, &environmentBank));
+
+	FMOD::Studio::Bank* itemsBank = NULL;
+	Sound::errorcheck(system->loadBankFile(("Sounds/Items.bank"), FMOD_STUDIO_LOAD_BANK_NORMAL, &itemsBank));
+
+	FMOD::Studio::Bank* uiBank = NULL;
+	Sound::errorcheck(system->loadBankFile(("Sounds/UI.bank"), FMOD_STUDIO_LOAD_BANK_NORMAL, &uiBank));
+
+	FMOD::Studio::Bank* playerBank = NULL;
+	Sound::errorcheck(system->loadBankFile(("Sounds/Player.bank"), FMOD_STUDIO_LOAD_BANK_NORMAL, &playerBank));
+
+
+
+
+	// Get the Looping Ambience event
+	FMOD::Studio::EventDescription* loopingAmbienceDescription = NULL;
+	Sound::errorcheck( system->getEvent("event:/BG_music", &loopingAmbienceDescription) );
+
+	FMOD::Studio::EventInstance* loopingAmbienceInstance = NULL;
+	Sound::errorcheck( loopingAmbienceDescription->createInstance(&loopingAmbienceInstance) );
+	Sound::errorcheck(loopingAmbienceInstance->start());
+
+	// Get the Looping spider event
+	FMOD::Studio::EventDescription* loopingSpiderDscription = NULL;
+	Sound::errorcheck(system->getEvent("event:/Spider_idle", &loopingSpiderDscription));
+
+	FMOD::Studio::EventInstance* loopingSpiderInstance = NULL;
+	Sound::errorcheck(loopingSpiderDscription->createInstance(&loopingSpiderInstance));
+	Sound::errorcheck(loopingSpiderInstance->start());
+
+	// Get the Looping golem event
+	FMOD::Studio::EventDescription* loopingGolemDscription = NULL;
+	Sound::errorcheck(system->getEvent("event:/Golem_idle", &loopingGolemDscription));
+
+	FMOD::Studio::EventInstance* loopingGolemInstance = NULL;
+	Sound::errorcheck(loopingGolemDscription->createInstance(&loopingGolemInstance));
+	Sound::errorcheck(loopingGolemInstance->start());
+
+	// Get the Single Explosion event
 	FMOD::Studio::EventDescription* explosionDescription = NULL;
-	Sound::errorcheck(system->getEvent("event:/BG_music", &explosionDescription));
-	
-	// Start loading test sample data and keep it in memory
+	Sound::errorcheck(system->getEvent("event:/Welcome", &explosionDescription));
+
+	// Start loading explosion sample data and keep it in memory
 	Sound::errorcheck(explosionDescription->loadSampleData());
-
-	// One-shot event
-	FMOD::Studio::EventInstance* eventInstance = NULL;
-	Sound::errorcheck(explosionDescription->createInstance(&eventInstance));
-
-	Sound::errorcheck(eventInstance->start());
-
-	// Release will clean up the instance when it completes
-	Sound::errorcheck(eventInstance->release());
 
 	// TODO: Register layers
 	_layers.push_back(std::make_shared<GLAppLayer>());
@@ -299,13 +332,25 @@ void Application::_Run()
 			onUIBandage = true;
 			onUiAmmo = true;
 			startPlaying = true;
+			
+			if (startPlaying == true) {
+
+				// One-shot event
+				FMOD::Studio::EventInstance* eventInstance = NULL;
+				Sound::errorcheck(explosionDescription->createInstance(&eventInstance));
+
+				Sound::errorcheck(eventInstance->start());
+
+				// Release will clean up the instance when it completes
+				Sound::errorcheck(eventInstance->release());
+			}
+
 		}
 
 		if (InputEngine::IsKeyDown(GLFW_KEY_W))
 		{
 			playerX = _currentScene->MainCamera->GetGameObject()->GetPosition().x;
 			playerY = _currentScene->MainCamera->GetGameObject()->GetPosition().y;
-
 		}
 		if (InputEngine::IsKeyDown(GLFW_KEY_A))
 		{
